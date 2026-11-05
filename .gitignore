@@ -1,0 +1,11 @@
+node_modules/
+.cache/
+.wrangler/
+*.tgz
+*.tar
+.env
+.env.*
+.dev.vars*
+.DS_Store
+__pycache__/
+*.py[cod]

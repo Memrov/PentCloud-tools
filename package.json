@@ -1,0 +1,46 @@
+{
+  "name": "@memrov2/pentcloud-recon",
+  "version": "0.1.0",
+  "description": "A small Cloudflare-native runtime for httpx, dnsx, Katana and Subfinder",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Memrov/PentCloud-tools.git"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.d.mts",
+      "import": "./src/index.mjs"
+    },
+    "./worker": {
+      "types": "./src/worker.d.mts",
+      "import": "./src/worker.mjs"
+    },
+    "./tools.lock.json": "./tools.lock.json"
+  },
+  "files": [
+    "src",
+    "tools.lock.json",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "test:runner": "go test ./runner",
+    "image:prepare": "python3 scripts/prepare-image.py",
+    "image:build": "node scripts/build-image.mjs",
+    "prepublishOnly": "npm test && npm run test:runner && npm run test:image && npm run typecheck",
+    "typecheck": "wrangler types --config examples/cloudflare/wrangler.jsonc .cache/worker-types.d.ts && tsc --noEmit --strict --skipLibCheck --module nodenext --moduleResolution nodenext --target es2022 .cache/worker-types.d.ts test/types.ts",
+    "test:image": "python3 -m unittest discover -s test -p \"*_test.py\""
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "wrangler": "4.157.0"
+  }
+}

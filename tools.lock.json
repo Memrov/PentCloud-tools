@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "packVersion": "0.1.0",
+  "platform": "linux/amd64",
+  "baseImage": "docker.io/library/alpine@sha256:85f2b723e106c34644cd5851d7e81ee87da98ac54672b29947c052a45d31dc2f",
+  "tools": [
+    {
+      "tool": "httpx",
+      "version": "v1.12.0",
+      "assetSha256": "9d8439e8b6c9aa7d1e2314817a392e00d5178da3af5652f7475f88868f418f76",
+      "downloadBytes": 19200026,
+      "binaryBytes": 54444194,
+      "url": "https://github.com/projectdiscovery/httpx/releases/download/v1.12.0/httpx_1.12.0_linux_amd64.zip",
+      "binarySha256": "6d78b83b4da452a7e0bd3613c4fae04cbf523209f083904b563f4d4406a680b0"
+    },
+    {
+      "tool": "dnsx",
+      "version": "v1.3.1",
+      "assetSha256": "438b964653056dd51dcfe614b1a16f8bced3cc48a1d27bc07cc6fdf2ef2a9533",
+      "downloadBytes": 9829391,
+      "binaryBytes": 28569784,
+      "url": "https://github.com/projectdiscovery/dnsx/releases/download/v1.3.1/dnsx_1.3.1_linux_amd64.zip",
+      "binarySha256": "5fca43ddfe95922d8d88a859c1fcc59fee327bf39ae574db66d391c6675b8ba3"
+    },
+    {
+      "tool": "katana",
+      "version": "v1.8.0",
+      "assetSha256": "cb027ae99d0757061b70c07a15c7a80f62c5a535ab52c4a329f80c4b0a7309d2",
+      "downloadBytes": 31910234,
+      "binaryBytes": 68030626,
+      "url": "https://github.com/projectdiscovery/katana/releases/download/v1.8.0/katana_1.8.0_linux_amd64.zip",
+      "binarySha256": "3214c11a0548667b37ec17bbb691706b7e0de1f0f24b3ead2ee12c301ebc1bbc"
+    },
+    {
+      "tool": "subfinder",
+      "version": "v2.17.0",
+      "assetSha256": "a39c3e5c7a26ef3c430915c4d6cbf7716a00f26769a75e9405aba796142eba37",
+      "downloadBytes": 10308162,
+      "binaryBytes": 30474402,
+      "url": "https://github.com/projectdiscovery/subfinder/releases/download/v2.17.0/subfinder_2.17.0_linux_amd64.zip",
+      "binarySha256": "bf4ad8590702b0bb92be9b3be185f96a230b047c9b97f2831cf8914344f0b15a"
+    }
+  ]
+}

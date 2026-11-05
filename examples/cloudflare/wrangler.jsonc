@@ -1,0 +1,32 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "pentcloud-recon-example",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-11-05",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": false },
+  "durable_objects": {
+    "bindings": [{ "name": "RECON", "class_name": "ReconRunner" }],
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["ReconRunner"] }],
+  "workflows": [
+    {
+      "name": "pentcloud-recon-example",
+      "binding": "RECON_WORKFLOW",
+      "class_name": "ReconWorkflow",
+    },
+  ],
+  "containers": [
+    {
+      "class_name": "ReconRunner",
+      "scheduling_policy": "durable_object",
+      "images": {
+        "recon": {
+          "dockerfile": "../../images/recon/Dockerfile",
+          "build_context": "../..",
+        },
+      },
+    },
+  ],
+}

@@ -1,0 +1,7 @@
+**
+!images/
+!images/recon/
+!images/recon/Dockerfile
+!.cache/
+!.cache/image-root/
+!.cache/image-root/**
