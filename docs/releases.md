@@ -48,3 +48,5 @@ Native process deadlines now use cancellable timers cleared when `exitCode` sett
 ## SQLmap development SDK: 0.1.1-dev.2
 
 The SQLmap adapter and shared runtime use the named `standard-1` preset for SQLmap, retaining its 75-second process limit and fixed request rate. `lite` completed the positive fixture but timed out on the parameterized negative fixture. Other adapters retain their `0.1.1-dev.1` release and named presets. This sizing adjustment does not change the tool payload, image manifest or stable versions.
+
+The SQLmap adapter `0.1.1-dev.3` corrects its public `ready().instance` declaration to `standard-1` and depends on shared runtime `0.1.1-dev.2`. It has the same executable profile as the preceding adapter candidate.

@@ -110,4 +110,4 @@ The [release table](docs/releases.md) lists the npm SDKs and their image-distrib
 
 ## Named instance presets (development)
 
-The next SDK version uses Cloudflare's named Container presets. Most bounded packs start on `lite`; recon and password use `standard-1`; Metasploit uses `standard-2`. `ready()` verifies and prepares a runtime without executing a scanner. Actual tool execution still waits for readiness and verifies the image manifest. SDK-only lifecycle/sizing updates can retain the same tool lock and image when their executable payload and image manifest are unchanged. Released SDK versions remain immutable.
+The next SDK version uses Cloudflare's named Container presets. Most bounded packs start on `lite`; recon, SQLmap and password use `standard-1`; Metasploit uses `standard-2`. `ready()` verifies and prepares a runtime without executing a scanner. Actual tool execution still waits for readiness and verifies the image manifest. SDK-only lifecycle/sizing updates can retain the same tool lock and image when their executable payload and image manifest are unchanged. Released SDK versions remain immutable.
