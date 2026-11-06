@@ -1,0 +1,349 @@
+{
+  "schemaVersion": 1,
+  "packId": "password",
+  "packVersion": "0.1.0",
+  "platform": "linux/amd64",
+  "baseImage": "docker.io/library/debian@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2",
+  "tools": [
+    {
+      "tool": "hashcat",
+      "version": "v8.0.0",
+      "url": "https://github.com/hashcat/hashcat/releases/download/v8.0.0/hashcat-8.0.0.7z",
+      "format": "7z-source",
+      "destination": "hashcat",
+      "member": "hashcat.bin",
+      "sha256": "9fa86e1bfd5dd898d3c83aa38a67b08db1ba5d2f5252dffa2af44a8c62585f49"
+    }
+  ],
+  "assets": [],
+  "debs": [
+    {
+      "package": "libsframe1",
+      "version": "2.44-3",
+      "url": "https://deb.debian.org/debian/pool/main/b/binutils/libsframe1_2.44-3_amd64.deb",
+      "sha256": "38f625dfdc582717029ac3a3e97c51d994ec2e7a0e9b230c6b44e40d1276311f",
+      "format": "deb"
+    },
+    {
+      "package": "binutils-common",
+      "version": "2.44-3",
+      "url": "https://deb.debian.org/debian/pool/main/b/binutils/binutils-common_2.44-3_amd64.deb",
+      "sha256": "002da5d23f8757dee97a2c0a40e0e1d4d85a43da094488ee2ee7068d4d3691f9",
+      "format": "deb"
+    },
+    {
+      "package": "libbinutils",
+      "version": "2.44-3",
+      "url": "https://deb.debian.org/debian/pool/main/b/binutils/libbinutils_2.44-3_amd64.deb",
+      "sha256": "4f4664c8a8f0ad0c8631c39fab02e3d8d86ccc6f4436a1d59f059dbcb0492679",
+      "format": "deb"
+    },
+    {
+      "package": "libgprofng0",
+      "version": "2.44-3",
+      "url": "https://deb.debian.org/debian/pool/main/b/binutils/libgprofng0_2.44-3_amd64.deb",
+      "sha256": "0d36d0bde85c467ac6735dded08e19dd30ae1369e3908b9eb48ccc0d6ff66648",
+      "format": "deb"
+    },
+    {
+      "package": "libctf-nobfd0",
+      "version": "2.44-3",
+      "url": "https://deb.debian.org/debian/pool/main/b/binutils/libctf-nobfd0_2.44-3_amd64.deb",
+      "sha256": "e280b2be3db6e584500e865c251605b95c346767d87ccb2524e44992048fc657",
+      "format": "deb"
+    },
+    {
+      "package": "libctf0",
+      "version": "2.44-3",
+      "url": "https://deb.debian.org/debian/pool/main/b/binutils/libctf0_2.44-3_amd64.deb",
+      "sha256": "120cafcd93132a276fa92a8fb4cf39b23d14e5a3e348f4f5580638d71ca95ac5",
+      "format": "deb"
+    },
+    {
+      "package": "libjansson4",
+      "version": "2.14-2+b3",
+      "url": "https://deb.debian.org/debian/pool/main/j/jansson/libjansson4_2.14-2%2bb3_amd64.deb",
+      "sha256": "60707a62fe6c1228c3389b12a13ca4efd76defc5532473e547a29e99cf7d2a6e",
+      "format": "deb"
+    },
+    {
+      "package": "binutils-x86-64-linux-gnu",
+      "version": "2.44-3",
+      "url": "https://deb.debian.org/debian/pool/main/b/binutils/binutils-x86-64-linux-gnu_2.44-3_amd64.deb",
+      "sha256": "e6741ce95ff0f7a131c8d9faa3528ccbbc453078bbc62a97da81340ed7462c53",
+      "format": "deb"
+    },
+    {
+      "package": "binutils",
+      "version": "2.44-3",
+      "url": "https://deb.debian.org/debian/pool/main/b/binutils/binutils_2.44-3_amd64.deb",
+      "sha256": "6bc08c02539ba53b5e748142397144c499f9b20b5fa9bb56431545db124addeb",
+      "format": "deb"
+    },
+    {
+      "package": "libedit2",
+      "version": "3.1-20250104-1",
+      "url": "https://deb.debian.org/debian/pool/main/libe/libedit/libedit2_3.1-20250104-1_amd64.deb",
+      "sha256": "b002ea172b9c1e34a67bc497c523c67bb74c3f0a4e98113cb083990a1f1d3bfe",
+      "format": "deb"
+    },
+    {
+      "package": "libffi8",
+      "version": "3.4.8-2",
+      "url": "https://deb.debian.org/debian/pool/main/libf/libffi/libffi8_3.4.8-2_amd64.deb",
+      "sha256": "0ebdc340de33333639c3c63874cd4b15ac2e83dfa1ef3053b7eefaf4919f4f68",
+      "format": "deb"
+    },
+    {
+      "package": "libxml2",
+      "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "url": "https://deb.debian.org/debian/pool/main/libx/libxml2/libxml2_2.12.7%2bdfsg%2breally2.9.14-2.1%2bdeb13u3_amd64.deb",
+      "sha256": "e0c6b63ce4602a036a526f60fe5e6c1586710688058d98fc1001b9b3147b7efd",
+      "format": "deb"
+    },
+    {
+      "package": "libz3-4",
+      "version": "4.13.3-1",
+      "url": "https://deb.debian.org/debian/pool/main/z/z3/libz3-4_4.13.3-1_amd64.deb",
+      "sha256": "71383373523ef62d47eccf660cf6535c3febcbb3f88e54cb7a43124014b57359",
+      "format": "deb"
+    },
+    {
+      "package": "libllvm18",
+      "version": "1:18.1.8-18+b1",
+      "url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-18/libllvm18_18.1.8-18%2bb1_amd64.deb",
+      "sha256": "b7494ab739370262e8a2204cc1e24b74c7fab3adcc87c7812a7c208f3ccd229b",
+      "format": "deb"
+    },
+    {
+      "package": "libclang-cpp18",
+      "version": "1:18.1.8-18+b1",
+      "url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-18/libclang-cpp18_18.1.8-18%2bb1_amd64.deb",
+      "sha256": "0d6b06b620b83d6936a504af7617812eb3a778ccc77d643a80de266992bf3ec9",
+      "format": "deb"
+    },
+    {
+      "package": "libgomp1",
+      "version": "14.2.0-19",
+      "url": "https://deb.debian.org/debian/pool/main/g/gcc-14/libgomp1_14.2.0-19_amd64.deb",
+      "sha256": "72b7a1a33c48f3195efeb044111b34ae684b1e640bb6495c832443b798601cd5",
+      "format": "deb"
+    },
+    {
+      "package": "libitm1",
+      "version": "14.2.0-19",
+      "url": "https://deb.debian.org/debian/pool/main/g/gcc-14/libitm1_14.2.0-19_amd64.deb",
+      "sha256": "febdb3c528cde1a3abe952e17a1d3cfa7ccaca5b6f506d983d34385dad199490",
+      "format": "deb"
+    },
+    {
+      "package": "libatomic1",
+      "version": "14.2.0-19",
+      "url": "https://deb.debian.org/debian/pool/main/g/gcc-14/libatomic1_14.2.0-19_amd64.deb",
+      "sha256": "212b399aae2f7299203d261a57e49372e09565a9a5ea971905f94a3960366c05",
+      "format": "deb"
+    },
+    {
+      "package": "libasan8",
+      "version": "14.2.0-19",
+      "url": "https://deb.debian.org/debian/pool/main/g/gcc-14/libasan8_14.2.0-19_amd64.deb",
+      "sha256": "771899ade7310fe31aa538a509354c33d62bbe4e408b4e5fc1e513988dc42645",
+      "format": "deb"
+    },
+    {
+      "package": "liblsan0",
+      "version": "14.2.0-19",
+      "url": "https://deb.debian.org/debian/pool/main/g/gcc-14/liblsan0_14.2.0-19_amd64.deb",
+      "sha256": "a0df07da76287a45e665d584363dc2a6a1c4e240aee41b8bbc0f67cdff97cd68",
+      "format": "deb"
+    },
+    {
+      "package": "libtsan2",
+      "version": "14.2.0-19",
+      "url": "https://deb.debian.org/debian/pool/main/g/gcc-14/libtsan2_14.2.0-19_amd64.deb",
+      "sha256": "529d7f68227d16975076c5f842e8b687faea1b5df8e0dcf62e436d5402844ca5",
+      "format": "deb"
+    },
+    {
+      "package": "libubsan1",
+      "version": "14.2.0-19",
+      "url": "https://deb.debian.org/debian/pool/main/g/gcc-14/libubsan1_14.2.0-19_amd64.deb",
+      "sha256": "9205a1bef7d6a52ffc06548e0cde169ff303e688c12d9be3a98f734449077e22",
+      "format": "deb"
+    },
+    {
+      "package": "libhwasan0",
+      "version": "14.2.0-19",
+      "url": "https://deb.debian.org/debian/pool/main/g/gcc-14/libhwasan0_14.2.0-19_amd64.deb",
+      "sha256": "2cdaf797cad8ac30a964ab081370682dd065ae1b0305a0be9d8e0e14cd0657d7",
+      "format": "deb"
+    },
+    {
+      "package": "libquadmath0",
+      "version": "14.2.0-19",
+      "url": "https://deb.debian.org/debian/pool/main/g/gcc-14/libquadmath0_14.2.0-19_amd64.deb",
+      "sha256": "f5b51cf0ece3ec3bb7494d0cdbff3ce715ae00cfb2b6ed787f7db91319d64a7b",
+      "format": "deb"
+    },
+    {
+      "package": "libgcc-14-dev",
+      "version": "14.2.0-19",
+      "url": "https://deb.debian.org/debian/pool/main/g/gcc-14/libgcc-14-dev_14.2.0-19_amd64.deb",
+      "sha256": "ca6f2d36d96b19b3eb71405b0b80134d8c89380b02204a2512e5c58ceb090628",
+      "format": "deb"
+    },
+    {
+      "package": "libc-dev-bin",
+      "version": "2.41-12+deb13u4",
+      "url": "https://deb.debian.org/debian/pool/main/g/glibc/libc-dev-bin_2.41-12%2bdeb13u4_amd64.deb",
+      "sha256": "2c21175d6a8283ed566d154c0c0bc06f60836e53b0b9e1f74c14eac586b68c24",
+      "format": "deb"
+    },
+    {
+      "package": "linux-libc-dev",
+      "version": "6.12.115-2",
+      "url": "https://deb.debian.org/debian-security/pool/updates/main/l/linux/linux-libc-dev_6.12.115-2_all.deb",
+      "sha256": "235ba2cb2ea677f4acaf402b027e76d305342870f6d80d822d7ee9713e2f0ff5",
+      "format": "deb"
+    },
+    {
+      "package": "libcrypt-dev",
+      "version": "1:4.4.38-1",
+      "url": "https://deb.debian.org/debian/pool/main/libx/libxcrypt/libcrypt-dev_4.4.38-1_amd64.deb",
+      "sha256": "98e2333aea8d64ca68f9b75c16256d3a05492fd8f9e6dba96adbc6f19e4f5a09",
+      "format": "deb"
+    },
+    {
+      "package": "rpcsvc-proto",
+      "version": "1.4.3-1",
+      "url": "https://deb.debian.org/debian/pool/main/r/rpcsvc-proto/rpcsvc-proto_1.4.3-1_amd64.deb",
+      "sha256": "32ac0692694f8a34cc90c895f4fc739680fb2ef0e2d4870a68833682bf1c81a3",
+      "format": "deb"
+    },
+    {
+      "package": "libc6-dev",
+      "version": "2.41-12+deb13u4",
+      "url": "https://deb.debian.org/debian/pool/main/g/glibc/libc6-dev_2.41-12%2bdeb13u4_amd64.deb",
+      "sha256": "1fda734dabcd80b77266a09ab62b0f1e3e16d8091db62899890b2200745632a2",
+      "format": "deb"
+    },
+    {
+      "package": "libstdc++-14-dev",
+      "version": "14.2.0-19",
+      "url": "https://deb.debian.org/debian/pool/main/g/gcc-14/libstdc%2b%2b-14-dev_14.2.0-19_amd64.deb",
+      "sha256": "4b962fac5f1af0bd8b1b3f97e0f47b9d8e9a79e88802143f00ebfbd78ad87a7b",
+      "format": "deb"
+    },
+    {
+      "package": "libgc1",
+      "version": "1:8.2.8-1",
+      "url": "https://deb.debian.org/debian/pool/main/libg/libgc/libgc1_8.2.8-1_amd64.deb",
+      "sha256": "0279fc16692a3a4a6d5f84051f5e55fc721f3cbb0e2bbc052d8980888f18c698",
+      "format": "deb"
+    },
+    {
+      "package": "libobjc4",
+      "version": "14.2.0-19",
+      "url": "https://deb.debian.org/debian/pool/main/g/gcc-14/libobjc4_14.2.0-19_amd64.deb",
+      "sha256": "d48411ec79114d5941256dddb1720fc65cbe4733285b29d5ecc87eb452ab30d9",
+      "format": "deb"
+    },
+    {
+      "package": "libobjc-14-dev",
+      "version": "14.2.0-19",
+      "url": "https://deb.debian.org/debian/pool/main/g/gcc-14/libobjc-14-dev_14.2.0-19_amd64.deb",
+      "sha256": "60f8a34f94d46b0ae8d48335525bfaae3daef93c56d6b8bce0e76118e44a9136",
+      "format": "deb"
+    },
+    {
+      "package": "libclang-common-18-dev",
+      "version": "1:18.1.8-18+b1",
+      "url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-18/libclang-common-18-dev_18.1.8-18%2bb1_amd64.deb",
+      "sha256": "ca27d5915b97ef559eb6b3f9b025f9b162cd89e76e96c9ae3b0c3b90ff15d766",
+      "format": "deb"
+    },
+    {
+      "package": "llvm-18-linker-tools",
+      "version": "1:18.1.8-18+b1",
+      "url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-18/llvm-18-linker-tools_18.1.8-18%2bb1_amd64.deb",
+      "sha256": "3f703e020cb8968a2bfae2d42dbff32798f2f58f90dff89c6dc256d2f4a83e15",
+      "format": "deb"
+    },
+    {
+      "package": "libclang1-18",
+      "version": "1:18.1.8-18+b1",
+      "url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-18/libclang1-18_18.1.8-18%2bb1_amd64.deb",
+      "sha256": "a4cac44bbe60786a1e98cd889b080bbcc95278da65b1d1e3b70879a03768a4a1",
+      "format": "deb"
+    },
+    {
+      "package": "clang-18",
+      "version": "1:18.1.8-18+b1",
+      "url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-18/clang-18_18.1.8-18%2bb1_amd64.deb",
+      "sha256": "0476e0ebad77c0b91a1e3fd5344d79a185745703f954f44673cdf5ba7c88f800",
+      "format": "deb"
+    },
+    {
+      "package": "libhwloc15",
+      "version": "2.12.0-4",
+      "url": "https://deb.debian.org/debian/pool/main/h/hwloc/libhwloc15_2.12.0-4_amd64.deb",
+      "sha256": "aa53c4a1878475e7309f2c265c54d9a8a4602dec95564cf84d471d7376ff616c",
+      "format": "deb"
+    },
+    {
+      "package": "libllvmspirvlib18.1",
+      "version": "18.1.11-1",
+      "url": "https://deb.debian.org/debian/pool/main/s/spirv-llvm-translator-18/libllvmspirvlib18.1_18.1.11-1_amd64.deb",
+      "sha256": "18ee720f34085930d802d3ddd13c2c895cb579f3a7c8ac771a9da3afa998197f",
+      "format": "deb"
+    },
+    {
+      "package": "libpocl2-common",
+      "version": "6.0-6",
+      "url": "https://deb.debian.org/debian/pool/main/p/pocl/libpocl2-common_6.0-6_all.deb",
+      "sha256": "6281ff03a83e08973482f744e90139f127aa209daeeb589b862d8efd270ccaa1",
+      "format": "deb"
+    },
+    {
+      "package": "llvm-spirv-18",
+      "version": "18.1.11-1",
+      "url": "https://deb.debian.org/debian/pool/main/s/spirv-llvm-translator-18/llvm-spirv-18_18.1.11-1_amd64.deb",
+      "sha256": "64bd6acb35e4b6c10b4428e8cbbeabf6fd9990981b6f934463b97b0e20862ed2",
+      "format": "deb"
+    },
+    {
+      "package": "libpocl2t64",
+      "version": "6.0-6",
+      "url": "https://deb.debian.org/debian/pool/main/p/pocl/libpocl2t64_6.0-6_amd64.deb",
+      "sha256": "3724496119ff21f51bdb46c855287a852db7275c24f8042f72bf03692160df42",
+      "format": "deb"
+    },
+    {
+      "package": "pocl-opencl-icd",
+      "version": "6.0-6",
+      "url": "https://deb.debian.org/debian/pool/main/p/pocl/pocl-opencl-icd_6.0-6_amd64.deb",
+      "sha256": "75a364f99809f7134fe0fd1dde4cb8c9d690c89bae348abe53f8fec0e2c89297",
+      "format": "deb"
+    },
+    {
+      "package": "ocl-icd-libopencl1",
+      "version": "2.3.3-1",
+      "url": "https://deb.debian.org/debian/pool/main/o/ocl-icd/ocl-icd-libopencl1_2.3.3-1_amd64.deb",
+      "sha256": "99dfd409ae92505ee56742feea4e82a1e052818c5b0036ee618a371b5e28c9d1",
+      "format": "deb"
+    }
+  ],
+  "executables": [
+    "hashcat"
+  ],
+  "runtime": {
+    "enableInternet": false,
+    "vcpu": 2,
+    "memoryMib": 2048,
+    "diskMb": 8000
+  },
+  "files": true,
+  "links": {
+    "hashcat": "/opt/pentcloud-password/assets/hashcat/hashcat.bin"
+  }
+}

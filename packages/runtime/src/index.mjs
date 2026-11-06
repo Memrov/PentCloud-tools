@@ -26,13 +26,56 @@ export function request(input, allowed, tools) {
   return url;
 }
 
+export async function prepareFiles(required, input = {}) {
+  if (
+    !input ||
+    typeof input !== "object" ||
+    Array.isArray(input) ||
+    Object.keys(input).length !== required.length ||
+    Object.keys(input).some((name) => !required.includes(name))
+  )
+    throw new TypeError("Supply exactly the required input files");
+  let total = 0;
+  const files = required.map((name) => {
+    const value = input[name];
+    if (
+      !(value instanceof Uint8Array) ||
+      value.byteLength === 0 ||
+      (total += value.byteLength) > 2097152
+    )
+      throw new TypeError("Input files must total at most two MiB");
+    return [name, new Uint8Array(value)];
+  });
+  return Object.fromEntries(
+    await Promise.all(
+      files.map(async ([name, value]) => {
+        const digest = await crypto.subtle.digest("SHA-256", value);
+        let binary = "";
+        for (let offset = 0; offset < value.length; offset += 8192)
+          binary += String.fromCharCode(
+            ...value.subarray(offset, offset + 8192),
+          );
+        return [
+          name,
+          {
+            base64: btoa(binary),
+            sha256: [...new Uint8Array(digest)]
+              .map((v) => v.toString(16).padStart(2, "0"))
+              .join(""),
+          },
+        ];
+      }),
+    ),
+  );
+}
+
 /** Persist full output using Workflows' native stream support; complete with metadata only. */
-export async function runWorkflowStep(step, runner, input) {
+export async function runWorkflowStep(step, runner, input, files) {
   const stream = await step.do(
     "tool-evidence",
     { retries: { limit: 0, delay: "1 second" }, timeout: "3 minutes" },
     async () => {
-      const result = await runner.run(input);
+      const result = await runner.run(input, files);
       return new Blob([JSON.stringify(result)], {
         type: "application/json",
       }).stream();
@@ -53,5 +96,6 @@ export async function runWorkflowStep(step, runner, input) {
     stdoutBytes: new TextEncoder().encode(result.stdout).length,
     stderrBytes: new TextEncoder().encode(result.stderr).length,
     evidenceStep: "tool-evidence",
+    ...(result.inputHashes ? { inputHashes: result.inputHashes } : {}),
   };
 }

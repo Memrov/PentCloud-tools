@@ -1,0 +1,129 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "pentcloud-remaining-example",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-11-05",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": {
+    "enabled": false
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "SERVICE",
+        "class_name": "ServiceRunner"
+      },
+      {
+        "name": "WEB_CONTEXT",
+        "class_name": "WebContextRunner"
+      },
+      {
+        "name": "PCAP",
+        "class_name": "PcapRunner"
+      },
+      {
+        "name": "FILE_ANALYSIS",
+        "class_name": "FileRunner"
+      },
+      {
+        "name": "PASSWORD",
+        "class_name": "PasswordRunner"
+      },
+      {
+        "name": "REFERENCE",
+        "class_name": "ReferenceRunner"
+      },
+      {
+        "name": "METASPLOIT",
+        "class_name": "MetasploitRunner"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "ServiceRunner",
+        "WebContextRunner",
+        "PcapRunner",
+        "FileRunner",
+        "PasswordRunner",
+        "ReferenceRunner",
+        "MetasploitRunner"
+      ]
+    }
+  ],
+  "containers": [
+    {
+      "class_name": "ServiceRunner",
+      "scheduling_policy": "durable_object",
+      "images": {
+        "service": {
+          "dockerfile": "../../images/service/Dockerfile",
+          "build_context": "../.."
+        }
+      }
+    },
+    {
+      "class_name": "WebContextRunner",
+      "scheduling_policy": "durable_object",
+      "images": {
+        "web-context": {
+          "dockerfile": "../../images/web-context/Dockerfile",
+          "build_context": "../.."
+        }
+      }
+    },
+    {
+      "class_name": "PcapRunner",
+      "scheduling_policy": "durable_object",
+      "images": {
+        "pcap": {
+          "dockerfile": "../../images/pcap/Dockerfile",
+          "build_context": "../.."
+        }
+      }
+    },
+    {
+      "class_name": "FileRunner",
+      "scheduling_policy": "durable_object",
+      "images": {
+        "file-analysis": {
+          "dockerfile": "../../images/file-analysis/Dockerfile",
+          "build_context": "../.."
+        }
+      }
+    },
+    {
+      "class_name": "PasswordRunner",
+      "scheduling_policy": "durable_object",
+      "images": {
+        "password": {
+          "dockerfile": "../../images/password/Dockerfile",
+          "build_context": "../.."
+        }
+      }
+    },
+    {
+      "class_name": "ReferenceRunner",
+      "scheduling_policy": "durable_object",
+      "images": {
+        "reference": {
+          "dockerfile": "../../images/reference/Dockerfile",
+          "build_context": "../.."
+        }
+      }
+    },
+    {
+      "class_name": "MetasploitRunner",
+      "scheduling_policy": "durable_object",
+      "images": {
+        "metasploit": {
+          "dockerfile": "../../images/metasploit/Dockerfile",
+          "build_context": "../.."
+        }
+      }
+    }
+  ]
+}

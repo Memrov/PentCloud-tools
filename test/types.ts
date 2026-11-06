@@ -60,9 +60,57 @@ httpCommand({
   // @ts-expect-error no arbitrary shell/flags
   args: ["--proxy", "x"],
 });
-import type {WorkflowStep} from 'cloudflare:workers';
-import {runWorkflowStep} from '@memrov2/pentcloud-tool-runtime';
-async function streamedStep(step:WorkflowStep,runner:HttpRunner) {
- return runWorkflowStep(step,runner,{tool:'curl' as const,target:'https://example.com/'});
+import type { WorkflowStep } from "cloudflare:workers";
+import { runWorkflowStep } from "@memrov2/pentcloud-tool-runtime";
+async function streamedStep(step: WorkflowStep, runner: HttpRunner) {
+  return runWorkflowStep(step, runner, {
+    tool: "curl" as const,
+    target: "https://example.com/",
+  });
 }
 void streamedStep;
+
+import type { ServiceRunner } from "@memrov2/pentcloud-service/worker";
+import type { WebContextRunner } from "@memrov2/pentcloud-web-context/worker";
+import type { PcapRunner } from "@memrov2/pentcloud-pcap/worker";
+import type { FileRunner } from "@memrov2/pentcloud-file-analysis/worker";
+import type { PasswordRunner } from "@memrov2/pentcloud-password/worker";
+import type { ReferenceRunner } from "@memrov2/pentcloud-reference/worker";
+import type { MetasploitRunner } from "@memrov2/pentcloud-metasploit/worker";
+import { buildCommand as serviceCommand } from "@memrov2/pentcloud-service";
+serviceCommand({
+  tool: "masscan",
+  target: "192.0.2.1",
+  ports: [443],
+  adapter: "eth0",
+  routerMac: "00:11:22:33:44:55",
+});
+async function remaining(
+  step: WorkflowStep,
+  service: ServiceRunner,
+  web: WebContextRunner,
+  pcap: PcapRunner,
+  file: FileRunner,
+  password: PasswordRunner,
+  reference: ReferenceRunner,
+  msf: MetasploitRunner,
+) {
+  const input = new Uint8Array([1]);
+  await service.run({ tool: "nmap", target: "192.0.2.1", ports: [443] });
+  await web.run({ tool: "whatweb", target: "https://example.com/" });
+  await runWorkflowStep(step, pcap, { tool: "tshark" as const }, { input });
+  await file.run({ tool: "binwalk", view: "entropy" }, { input });
+  await password.run(
+    { tool: "hashcat", view: "sha256-dictionary" },
+    { input, dictionary: input },
+  );
+  const source = await reference.readSource(
+    "exploits/multiple/webapps/50383.sh",
+  );
+  const bytes: Uint8Array = source.bytes;
+  await msf.fetch(new Request("http://internal/mcp"));
+  // @ts-expect-error capture bytes are required
+  await pcap.run({ tool: "tshark" });
+  return bytes;
+}
+void remaining;

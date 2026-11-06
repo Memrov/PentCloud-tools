@@ -101,4 +101,4 @@ See [tool packs and agent capabilities](docs/tool-packs.md) for the current Kali
 
 Run `npm run coverage` after the development setup in [testing and coverage](docs/testing.md). Reports use standard Node LCOV, Go coverprofile and Python Cobertura formats. Codecov configuration is included; service authentication and CI selection must be completed before its checks are active.
 
-Three additional [candidate bundles](docs/bundles.md) provide HTTP investigation, selected Nuclei templates and focused SQLmap testing. They are separate workspace packages and images; recon remains the only published release.
+Ten additional candidate workspaces cover [HTTP, Nuclei and SQLmap](docs/bundles.md) and [the remaining tool families](docs/remaining-bundles.md). Each has its own pinned image and bounded interface. Browser automation stays with managed Browser Run. Recon remains the only published release; these candidates do not replace every Kali operation.

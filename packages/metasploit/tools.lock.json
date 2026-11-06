@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "packId": "metasploit",
+  "packVersion": "0.1.0",
+  "platform": "linux/amd64",
+  "baseImage": "docker.io/metasploitframework/metasploit-framework@sha256:8096709486bce8b5f35980f2aea42dc7cd83e34ebbeb4d56eab3339847de258d",
+  "tools": [
+    {
+      "tool": "metasploit",
+      "version": "image-8096709486bc"
+    }
+  ],
+  "assets": [],
+  "executables": [],
+  "runtime": {
+    "vcpu": 2,
+    "memoryMib": 2048,
+    "diskMb": 8000,
+    "enableInternet": true
+  },
+  "privateOnlyReasons": [
+    "Vendor image includes Nmap; public image redistribution requires review."
+  ]
+}

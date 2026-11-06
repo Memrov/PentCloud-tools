@@ -2,6 +2,7 @@ export interface ToolCommand {
   argv: string[];
   stdin: string;
   timeoutMs: number;
+  requiredFiles?: string[];
 }
 export interface PackLock {
   packId: string;
@@ -24,6 +25,7 @@ export interface ToolResult {
   timedOut: boolean;
   truncated: boolean;
   error?: string;
+  inputHashes?: Record<string, string>;
   processMs: number;
   firstJSONMs: number;
   cpuUserMs: number;
@@ -45,8 +47,11 @@ export interface StreamStep {
 }
 export declare function runWorkflowStep<I>(
   step: StreamStep,
-  runner: { run(input: I): Promise<ToolResult> },
+  runner: {
+    run(input: I, files?: Record<string, Uint8Array>): Promise<ToolResult>;
+  },
   input: I,
+  files?: Record<string, Uint8Array>,
 ): Promise<
   Omit<
     ToolResult,
@@ -61,3 +66,8 @@ export declare function runWorkflowStep<I>(
     | "readyMs"
   > & { stdoutBytes: number; stderrBytes: number; evidenceStep: string }
 >;
+
+export declare function prepareFiles(
+  required: string[],
+  files?: Record<string, Uint8Array>,
+): Promise<Record<string, { base64: string; sha256: string }>>;

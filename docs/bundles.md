@@ -1,6 +1,6 @@
 # Additional tool bundles
 
-These three **unreleased candidates** use the same native Cloudflare Container approach as the released recon pack. They are separate images and independently versioned npm workspaces. A small shared runtime handles serialization, image/SDK pin verification and shutdown. They do not replace Kali or change PentCloud's production routing.
+These three **unreleased candidates** ([additional families](remaining-bundles.md)) use the same native Cloudflare Container approach as the released recon pack. They are separate images and independently versioned npm workspaces. A small shared runtime handles serialization, image/SDK pin verification and shutdown. They do not replace Kali or change PentCloud's production routing.
 
 | Workspace | Tools | Initial interface |
 | --- | --- | --- |
@@ -65,7 +65,7 @@ Images and release metadata remain in `.cache/packs/<pack>/`. Copy the OCI image
 
 Each command has a 75-second execution deadline and a two-MiB limit per output stream. Runtimes are serialized per identity, stop after 120 seconds of inactivity, and support explicit shutdown. HTTP and SQLmap use one vCPU/512 MiB; Nuclei uses one vCPU/1,024 MiB. The allocation is not a guarantee for larger future workloads.
 
-SQLmap's temporary sessions stay inside that run's isolated runtime and are flushed before a new test. Stdout/stderr are returned; arbitrary filesystem browsing, session export and resume across destroyed containers are not part of this candidate interface. Persist returned evidence before stopping the runtime. Future file-backed operations need explicit bounded transfer support before production cutover.
+SQLmap's temporary sessions stay inside that run's isolated runtime and are flushed before a new test. Stdout/stderr are returned; arbitrary filesystem browsing, session export and resume across destroyed containers are not part of this candidate interface. Persist returned evidence before stopping the runtime. The offline candidates now support bounded input attachments; SQLmap session export/resume remains outside this interface.
 
 ## Verification
 

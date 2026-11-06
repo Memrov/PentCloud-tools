@@ -162,3 +162,42 @@ func TestPackBuildConfigurationRejectsOtherPackExecutables(t *testing.T) {
 		t.Fatalf("another pack's executable was accepted: %+v", r)
 	}
 }
+
+func TestFileInputRequiresOptInAndVerifiedDigest(t *testing.T) {
+	oldHome, oldFiles := runtimeHome, allowFiles
+	runtimeHome, allowFiles = t.TempDir(), "true"
+	t.Cleanup(func() { runtimeHome, allowFiles = oldHome, oldFiles })
+	d := fixture(t, "cat \"$HOME/input.bin\"\n")
+	in := input(1000)
+	in.Files = map[string]FileInput{"input": {Base64: "Zml4dHVyZQ==", SHA256: "f16d05ec6b29248d2c61ad6ddc143d61d4c30f9e06f0fbdd3d9e31f765a4a088"}}
+	// A wrong digest must never start a process or leave an input behind.
+	r := execute(in, d)
+	if r.Error != "File checksum mismatch" || r.Stdout != "" {
+		t.Fatalf("bad digest accepted: %+v", r)
+	}
+	in.Files["input"] = FileInput{Base64: "Zml4dHVyZQ==", SHA256: "f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d"}
+	r = execute(in, d)
+	if r.ExitCode != 0 || r.Stdout != "fixture" {
+		t.Fatalf("verified bytes not delivered: %+v", r)
+	}
+	if _, err := os.Stat(filepath.Join(runtimeHome, "input.bin")); !os.IsNotExist(err) {
+		t.Fatal("input file survived execution")
+	}
+	allowFiles = "false"
+	if r = execute(in, d); r.Error != "Files are disabled for this pack" {
+		t.Fatalf("files accepted without opt-in: %+v", r)
+	}
+	allowFiles = "true"
+	delete(in.Files, "input")
+	in.Files["../escape"] = FileInput{Base64: "Zg==", SHA256: "x"}
+	if r = execute(in, d); r.Error != "Unsupported input file" {
+		t.Fatalf("file path was accepted: %+v", r)
+	}
+}
+
+func TestProtocolRejectsOversizedTrailerBeforeExecuting(t *testing.T) {
+	code, out, _ := protocol(t, `{"argv":["/bin/sh"],"timeoutMs":1000}`+strings.Repeat(" ", 4194304)+`{}`)
+	if code != 2 || len(out) != 0 {
+		t.Fatalf("oversized input accepted: %d", code)
+	}
+}

@@ -1,0 +1,386 @@
+{
+  "schemaVersion": 1,
+  "packId": "pcap",
+  "packVersion": "0.1.0",
+  "platform": "linux/amd64",
+  "baseImage": "docker.io/library/debian@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2",
+  "tools": [
+    {
+      "tool": "tshark",
+      "version": "4.4.19"
+    }
+  ],
+  "assets": [],
+  "debs": [
+    {
+      "package": "libatomic1",
+      "version": "14.2.0-19",
+      "url": "https://deb.debian.org/debian/pool/main/g/gcc-14/libatomic1_14.2.0-19_amd64.deb",
+      "sha256": "212b399aae2f7299203d261a57e49372e09565a9a5ea971905f94a3960366c05",
+      "format": "deb"
+    },
+    {
+      "package": "libbcg729-0",
+      "version": "1.1.1-3+deb13u1",
+      "url": "https://deb.debian.org/debian/pool/main/b/bcg729/libbcg729-0_1.1.1-3%2bdeb13u1_amd64.deb",
+      "sha256": "5b0175dd97a54acae860a6b228683bad092ae5dd02eaf64fb4664b7b9b7e3f01",
+      "format": "deb"
+    },
+    {
+      "package": "libbrotli1",
+      "version": "1.1.0-2+deb13u1",
+      "url": "https://deb.debian.org/debian-security/pool/updates/main/b/brotli/libbrotli1_1.1.0-2%2bdeb13u1_amd64.deb",
+      "sha256": "db46824c60fee46aff3cc0be3e5f736bc606cae669b1fb17516a41e8073251a9",
+      "format": "deb"
+    },
+    {
+      "package": "libcap2-bin",
+      "version": "1:2.75-10+deb13u1+b3",
+      "url": "https://deb.debian.org/debian/pool/main/libc/libcap2/libcap2-bin_2.75-10%2bdeb13u1%2bb3_amd64.deb",
+      "sha256": "6404b8ee315ce3eb8e273981650e419ff0e91aed5213d4975a6895f98944ea80",
+      "format": "deb"
+    },
+    {
+      "package": "libcares2",
+      "version": "1.34.5-1+deb13u1",
+      "url": "https://deb.debian.org/debian/pool/main/c/c-ares/libcares2_1.34.5-1%2bdeb13u1_amd64.deb",
+      "sha256": "5034a2c34ea4730797df1a5f6a0ec142d7d09ce6923c06e167f08ad2e69a4218",
+      "format": "deb"
+    },
+    {
+      "package": "libcom-err2",
+      "version": "1.47.2-3+b12",
+      "url": "https://deb.debian.org/debian/pool/main/e/e2fsprogs/libcom-err2_1.47.2-3%2bb12_amd64.deb",
+      "sha256": "bd43e020b8fed399db3eebf098111f10fba4c436fff99ccad72cc7e27c9764ec",
+      "format": "deb"
+    },
+    {
+      "package": "libdbus-1-3",
+      "version": "1.16.2-2",
+      "url": "https://deb.debian.org/debian/pool/main/d/dbus/libdbus-1-3_1.16.2-2_amd64.deb",
+      "sha256": "bbcb711daff7e104b5f80f9b05475b6142674bfe65518a36a56e96a91068a3f5",
+      "format": "deb"
+    },
+    {
+      "package": "libdeflate0",
+      "version": "1.23-2",
+      "url": "https://deb.debian.org/debian/pool/main/libd/libdeflate/libdeflate0_1.23-2_amd64.deb",
+      "sha256": "5fe37fb79d53f5c91da6ba3ac4c1a8453e1f2b1ff0e0ea45189c5338bbfdbf82",
+      "format": "deb"
+    },
+    {
+      "package": "libffi8",
+      "version": "3.4.8-2",
+      "url": "https://deb.debian.org/debian/pool/main/libf/libffi/libffi8_3.4.8-2_amd64.deb",
+      "sha256": "0ebdc340de33333639c3c63874cd4b15ac2e83dfa1ef3053b7eefaf4919f4f68",
+      "format": "deb"
+    },
+    {
+      "package": "libgpg-error0",
+      "version": "1.51-4",
+      "url": "https://deb.debian.org/debian/pool/main/libg/libgpg-error/libgpg-error0_1.51-4_amd64.deb",
+      "sha256": "22b95570fd41c113ef6f5651563b4d748292844baab1278a46eb940c1dec2322",
+      "format": "deb"
+    },
+    {
+      "package": "libgcrypt20",
+      "version": "1.11.0-7+deb13u1",
+      "url": "https://deb.debian.org/debian/pool/main/libg/libgcrypt20/libgcrypt20_1.11.0-7%2bdeb13u1_amd64.deb",
+      "sha256": "f0eb41f8cb40896e0822e9ab65611e8383c12b721c76c54764f744abb4a8c247",
+      "format": "deb"
+    },
+    {
+      "package": "libglib2.0-0t64",
+      "version": "2.84.4-3~deb13u5",
+      "url": "https://deb.debian.org/debian/pool/main/g/glib2.0/libglib2.0-0t64_2.84.4-3%7edeb13u5_amd64.deb",
+      "sha256": "e2baf92c57d1db1753e5781a61450d9a01e7833c7bd2dfe87776a6811c11ecc2",
+      "format": "deb"
+    },
+    {
+      "package": "libunistring5",
+      "version": "1.3-2",
+      "url": "https://deb.debian.org/debian/pool/main/libu/libunistring/libunistring5_1.3-2_amd64.deb",
+      "sha256": "6dd3490bef06ea1096f32d10766b7e016cf579bfae8451d1b7df15ce05b8aa46",
+      "format": "deb"
+    },
+    {
+      "package": "libidn2-0",
+      "version": "2.3.8-2",
+      "url": "https://deb.debian.org/debian/pool/main/libi/libidn2/libidn2-0_2.3.8-2_amd64.deb",
+      "sha256": "90b039bcdc4578f8e1c4935adf8dbb525e36a164deefdbbb8c45bac347d48278",
+      "format": "deb"
+    },
+    {
+      "package": "libp11-kit0",
+      "version": "0.25.5-3",
+      "url": "https://deb.debian.org/debian/pool/main/p/p11-kit/libp11-kit0_0.25.5-3_amd64.deb",
+      "sha256": "784bf2063e166c8bc851a32623b74ebd85c499043a9d57c5bbd64fa63447f45a",
+      "format": "deb"
+    },
+    {
+      "package": "libtasn1-6",
+      "version": "4.20.0-2+deb13u1",
+      "url": "https://deb.debian.org/debian/pool/main/libt/libtasn1-6/libtasn1-6_4.20.0-2%2bdeb13u1_amd64.deb",
+      "sha256": "23fec6e06583ce2bad9b2c04c9b485e90440e259b1abf8677cd80d3ce60831ad",
+      "format": "deb"
+    },
+    {
+      "package": "libgnutls30t64",
+      "version": "3.8.9-3+deb13u4",
+      "url": "https://deb.debian.org/debian/pool/main/g/gnutls28/libgnutls30t64_3.8.9-3%2bdeb13u4_amd64.deb",
+      "sha256": "18a8bdfd91c7e3bcb01719d55a2b56849c7160b34f1f52b1c4fdfdd41bf1352b",
+      "format": "deb"
+    },
+    {
+      "package": "libkrb5support0",
+      "version": "1.21.3-5+deb13u1",
+      "url": "https://deb.debian.org/debian/pool/main/k/krb5/libkrb5support0_1.21.3-5%2bdeb13u1_amd64.deb",
+      "sha256": "3a0acd8b37955c0e102c756b52c97df2a31f67b96453c35dab70df218d309117",
+      "format": "deb"
+    },
+    {
+      "package": "libk5crypto3",
+      "version": "1.21.3-5+deb13u1",
+      "url": "https://deb.debian.org/debian/pool/main/k/krb5/libk5crypto3_1.21.3-5%2bdeb13u1_amd64.deb",
+      "sha256": "7da07ee674b47f1f0be7cc89317c25310086a1f1761217d0f72e6ae2c5a69b84",
+      "format": "deb"
+    },
+    {
+      "package": "libkeyutils1",
+      "version": "1.6.3-6",
+      "url": "https://deb.debian.org/debian/pool/main/k/keyutils/libkeyutils1_1.6.3-6_amd64.deb",
+      "sha256": "0b11ad17be0300b63ad4eeb4c6450fed24d34b7b740f23e5363dcb29ee6d5eba",
+      "format": "deb"
+    },
+    {
+      "package": "libkrb5-3",
+      "version": "1.21.3-5+deb13u1",
+      "url": "https://deb.debian.org/debian/pool/main/k/krb5/libkrb5-3_1.21.3-5%2bdeb13u1_amd64.deb",
+      "sha256": "47d71d6a7f2e59b9bae5f89602397594805113b95889ad18fa703cd53abafc97",
+      "format": "deb"
+    },
+    {
+      "package": "libgssapi-krb5-2",
+      "version": "1.21.3-5+deb13u1",
+      "url": "https://deb.debian.org/debian/pool/main/k/krb5/libgssapi-krb5-2_1.21.3-5%2bdeb13u1_amd64.deb",
+      "sha256": "30847c1fde4240567d7ed3aeab4f655dd591203758b857e85e824045aae70299",
+      "format": "deb"
+    },
+    {
+      "package": "libjbig0",
+      "version": "2.1-6.1+b2",
+      "url": "https://deb.debian.org/debian/pool/main/j/jbigkit/libjbig0_2.1-6.1%2bb2_amd64.deb",
+      "sha256": "95cbc44561651e1b3385454df08e8f2efe84498f6963a85259be2cc2fe798709",
+      "format": "deb"
+    },
+    {
+      "package": "libjpeg62-turbo",
+      "version": "1:2.1.5-4",
+      "url": "https://deb.debian.org/debian/pool/main/libj/libjpeg-turbo/libjpeg62-turbo_2.1.5-4_amd64.deb",
+      "sha256": "5504299ad0e3c0a9ca9f962a68a650a040db52f9f416a109e74df48d55601d3f",
+      "format": "deb"
+    },
+    {
+      "package": "liblerc4",
+      "version": "4.0.0+ds-5",
+      "url": "https://deb.debian.org/debian/pool/main/l/lerc/liblerc4_4.0.0%2bds-5_amd64.deb",
+      "sha256": "2e0c13c0ddbde12968c2c713c2e0474a5b78e90d5216031256a725e8c76aa31c",
+      "format": "deb"
+    },
+    {
+      "package": "liblua5.4-0",
+      "version": "5.4.7-1+b2",
+      "url": "https://deb.debian.org/debian/pool/main/l/lua5.4/liblua5.4-0_5.4.7-1%2bb2_amd64.deb",
+      "sha256": "3456e23667f21a5bea4f2182ec878621bf4c47fbc9819fdaad8835d6d1ee6247",
+      "format": "deb"
+    },
+    {
+      "package": "libmaxminddb0",
+      "version": "1.12.2-1",
+      "url": "https://deb.debian.org/debian/pool/main/libm/libmaxminddb/libmaxminddb0_1.12.2-1_amd64.deb",
+      "sha256": "025e1acec95ff56c44c0cb21c4c5fc42eeae323c263900729931ea5a1b95bc21",
+      "format": "deb"
+    },
+    {
+      "package": "libnghttp2-14",
+      "version": "1.64.0-1.1+deb13u1",
+      "url": "https://deb.debian.org/debian/pool/main/n/nghttp2/libnghttp2-14_1.64.0-1.1%2bdeb13u1_amd64.deb",
+      "sha256": "896cb217537c09251fb909b8541349010ac279d802d871e98c06a62a2c67ce2c",
+      "format": "deb"
+    },
+    {
+      "package": "libnghttp3-9",
+      "version": "1.8.0-1",
+      "url": "https://deb.debian.org/debian/pool/main/n/nghttp3/libnghttp3-9_1.8.0-1_amd64.deb",
+      "sha256": "388e4c33b72829cbf0d098afdc8539fa5ba7458eddb077f5538fdb4d5538716b",
+      "format": "deb"
+    },
+    {
+      "package": "libnl-3-200",
+      "version": "3.7.0-2",
+      "url": "https://deb.debian.org/debian/pool/main/libn/libnl3/libnl-3-200_3.7.0-2_amd64.deb",
+      "sha256": "ce5c153953016be42def7b105f37d55eae07a9608d1dfe6bcb03cc017fc384cb",
+      "format": "deb"
+    },
+    {
+      "package": "libnl-genl-3-200",
+      "version": "3.7.0-2",
+      "url": "https://deb.debian.org/debian/pool/main/libn/libnl3/libnl-genl-3-200_3.7.0-2_amd64.deb",
+      "sha256": "8f2f81ef4c6f8636f0b0cb2ff40b3c54a497d121f49c485620ae43c94782cd94",
+      "format": "deb"
+    },
+    {
+      "package": "libnl-route-3-200",
+      "version": "3.7.0-2",
+      "url": "https://deb.debian.org/debian/pool/main/libn/libnl3/libnl-route-3-200_3.7.0-2_amd64.deb",
+      "sha256": "1c8c95542688996cff8e954583642b10a3bd78b69954f565fda62144c2bc3897",
+      "format": "deb"
+    },
+    {
+      "package": "libopencore-amrnb0",
+      "version": "0.1.6-1+b2",
+      "url": "https://deb.debian.org/debian/pool/main/o/opencore-amr/libopencore-amrnb0_0.1.6-1%2bb2_amd64.deb",
+      "sha256": "25ec8a9f76a9b4377e676c3223d59eed5a0a3a943438c8cab066238328b24315",
+      "format": "deb"
+    },
+    {
+      "package": "libopus0",
+      "version": "1.5.2-2",
+      "url": "https://deb.debian.org/debian/pool/main/o/opus/libopus0_1.5.2-2_amd64.deb",
+      "sha256": "794056db33d71b2ac4bd8b5a4eb23b627bcb8a49d123c33b6e841a996253a067",
+      "format": "deb"
+    },
+    {
+      "package": "libpcap0.8t64",
+      "version": "1.10.5-2",
+      "url": "https://deb.debian.org/debian/pool/main/libp/libpcap/libpcap0.8t64_1.10.5-2_amd64.deb",
+      "sha256": "6a756d536a5b0cd3ef92f19ff9f22ed80c66baadbc0fe55d599f4aa0c27d3f86",
+      "format": "deb"
+    },
+    {
+      "package": "libsbc1",
+      "version": "2.1-1",
+      "url": "https://deb.debian.org/debian/pool/main/s/sbc/libsbc1_2.1-1_amd64.deb",
+      "sha256": "367a4355c925bbb4d197985a2dae5eff293baace58a16a3e8efaf50208f12a6b",
+      "format": "deb"
+    },
+    {
+      "package": "libsharpyuv0",
+      "version": "1.5.0-0.1",
+      "url": "https://deb.debian.org/debian/pool/main/libw/libwebp/libsharpyuv0_1.5.0-0.1_amd64.deb",
+      "sha256": "51934833d909588f7761fd84362114e90d8d2d38af57edf5df5c4a705e037547",
+      "format": "deb"
+    },
+    {
+      "package": "libsmi2t64",
+      "version": "0.4.8+dfsg2-17+b1",
+      "url": "https://deb.debian.org/debian/pool/main/libs/libsmi/libsmi2t64_0.4.8%2bdfsg2-17%2bb1_amd64.deb",
+      "sha256": "c5bef97b6d4c74879993f217a46395500004f186f92e007135496bf4ca2c1085",
+      "format": "deb"
+    },
+    {
+      "package": "libsnappy1v5",
+      "version": "1.2.2-1",
+      "url": "https://deb.debian.org/debian/pool/main/s/snappy/libsnappy1v5_1.2.2-1_amd64.deb",
+      "sha256": "53ec5f1050d64375a63cd1c30ee4a6d21ef0cfd485f9999aa0b70dd424ca3465",
+      "format": "deb"
+    },
+    {
+      "package": "libwebp7",
+      "version": "1.5.0-0.1",
+      "url": "https://deb.debian.org/debian/pool/main/libw/libwebp/libwebp7_1.5.0-0.1_amd64.deb",
+      "sha256": "c749744b04abdd1426b0c7718e516362c03a557c5151662092d6d4f2cef6e7c1",
+      "format": "deb"
+    },
+    {
+      "package": "libtiff6",
+      "version": "4.7.0-3+deb13u3",
+      "url": "https://deb.debian.org/debian/pool/main/t/tiff/libtiff6_4.7.0-3%2bdeb13u3_amd64.deb",
+      "sha256": "6bb2038f36817ae1ee6d33df03917b21835dcc2e0f3e3e80a71390e83c171173",
+      "format": "deb"
+    },
+    {
+      "package": "libspandsp2t64",
+      "version": "0.0.6+dfsg-2.2",
+      "url": "https://deb.debian.org/debian/pool/main/s/spandsp/libspandsp2t64_0.0.6%2bdfsg-2.2_amd64.deb",
+      "sha256": "f36c92d0ecf2035502def728e64d6a2817544748091eccbc1714dc8604525b84",
+      "format": "deb"
+    },
+    {
+      "package": "libspeexdsp1",
+      "version": "1.2.1-3",
+      "url": "https://deb.debian.org/debian/pool/main/s/speexdsp/libspeexdsp1_1.2.1-3_amd64.deb",
+      "sha256": "4f0f6fc83b2f9fbb85b5a1c1470033979bbcd4c72d2177fea98a55f014c4391e",
+      "format": "deb"
+    },
+    {
+      "package": "libssh-4",
+      "version": "0.11.5-0+deb13u1",
+      "url": "https://deb.debian.org/debian/pool/main/libs/libssh/libssh-4_0.11.5-0%2bdeb13u1_amd64.deb",
+      "sha256": "bc8cbc13617d1b21fa6f686f9f269a4f849f00624d5bb179785a058981701233",
+      "format": "deb"
+    },
+    {
+      "package": "libwireshark-data",
+      "version": "4.4.19-0+deb13u1",
+      "url": "https://deb.debian.org/debian-security/pool/updates/main/w/wireshark/libwireshark-data_4.4.19-0%2bdeb13u1_all.deb",
+      "sha256": "217534b05ac05933fb1f41b2e2683e77f1f1c1759bfbb4086c9a7d0bf9ec01f5",
+      "format": "deb"
+    },
+    {
+      "package": "libwsutil16",
+      "version": "4.4.19-0+deb13u1",
+      "url": "https://deb.debian.org/debian-security/pool/updates/main/w/wireshark/libwsutil16_4.4.19-0%2bdeb13u1_amd64.deb",
+      "sha256": "2d55b65228158d30bdbb5ab81dbdeb2c77a1abb36d17943e6fe32e2ef7a6f111",
+      "format": "deb"
+    },
+    {
+      "package": "libwiretap15",
+      "version": "4.4.19-0+deb13u1",
+      "url": "https://deb.debian.org/debian-security/pool/updates/main/w/wireshark/libwiretap15_4.4.19-0%2bdeb13u1_amd64.deb",
+      "sha256": "680ef5d8d9ebe41a0abdf26e0b8fb580d902b23aecc7df31508280e4ab1f776d",
+      "format": "deb"
+    },
+    {
+      "package": "libxml2",
+      "version": "2.12.7+dfsg+really2.9.14-2.1+deb13u3",
+      "url": "https://deb.debian.org/debian/pool/main/libx/libxml2/libxml2_2.12.7%2bdfsg%2breally2.9.14-2.1%2bdeb13u3_amd64.deb",
+      "sha256": "e0c6b63ce4602a036a526f60fe5e6c1586710688058d98fc1001b9b3147b7efd",
+      "format": "deb"
+    },
+    {
+      "package": "libwireshark18",
+      "version": "4.4.19-0+deb13u1",
+      "url": "https://deb.debian.org/debian-security/pool/updates/main/w/wireshark/libwireshark18_4.4.19-0%2bdeb13u1_amd64.deb",
+      "sha256": "ea488b7026394a9a08a37d60da84933cc93f7040f5c5e0cba3e303434e539d0d",
+      "format": "deb"
+    },
+    {
+      "package": "wireshark-common",
+      "version": "4.4.19-0+deb13u1",
+      "url": "https://deb.debian.org/debian-security/pool/updates/main/w/wireshark/wireshark-common_4.4.19-0%2bdeb13u1_amd64.deb",
+      "sha256": "c684007f371b363404d1833adba7e45afccc534491c93b780ba12c7115c5806b",
+      "format": "deb"
+    },
+    {
+      "package": "tshark",
+      "version": "4.4.19-0+deb13u1",
+      "url": "https://deb.debian.org/debian-security/pool/updates/main/w/wireshark/tshark_4.4.19-0%2bdeb13u1_amd64.deb",
+      "sha256": "3060f377217d7f1ec3bd45e29a8df5705da4a1a4f6c0016b21edd242f5bbcfcd",
+      "format": "deb"
+    }
+  ],
+  "executables": [
+    "tshark"
+  ],
+  "runtime": {
+    "enableInternet": false,
+    "vcpu": 1,
+    "memoryMib": 1024,
+    "diskMb": 3000
+  },
+  "files": true,
+  "links": {
+    "tshark": "/usr/bin/tshark"
+  }
+}

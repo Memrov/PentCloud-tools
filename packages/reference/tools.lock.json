@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "packId": "reference",
+  "packVersion": "0.1.0",
+  "platform": "linux/amd64",
+  "baseImage": "docker.io/library/debian@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2",
+  "tools": [
+    {
+      "tool": "searchsploit",
+      "version": "f08907b1"
+    }
+  ],
+  "assets": [
+    {
+      "url": "https://gitlab.com/exploit-database/exploitdb/-/raw/f08907b131f851c2ec3c052906f82ca83703ebef/searchsploit",
+      "path": "exploitdb/searchsploit",
+      "sha256": "16efc27312c6d3d9ea1be6e24ebc187e811c0606a33e52e80f1cbaabab77845f",
+      "executable": true
+    },
+    {
+      "url": "https://gitlab.com/exploit-database/exploitdb/-/raw/f08907b131f851c2ec3c052906f82ca83703ebef/.searchsploit_rc",
+      "path": "exploitdb/.searchsploit_rc",
+      "sha256": "a06c057c1bd2ce5c1ca42d04e1fe0b43127c9ba7dffeabc491681e5bf7ddad6c",
+      "executable": false
+    },
+    {
+      "url": "https://gitlab.com/exploit-database/exploitdb/-/raw/f08907b131f851c2ec3c052906f82ca83703ebef/files_exploits.csv",
+      "path": "exploitdb/files_exploits.csv",
+      "sha256": "10f31864b85c342c8a777a0248227dcd1e11ae50b246fcfa8bb8051bdc151062",
+      "executable": false
+    },
+    {
+      "url": "https://gitlab.com/exploit-database/exploitdb/-/raw/f08907b131f851c2ec3c052906f82ca83703ebef/files_shellcodes.csv",
+      "path": "exploitdb/files_shellcodes.csv",
+      "sha256": "d458fe46dff2144fa0a6f9ea5dcaa185f881b90d7ef5117740abb4ad5c2beb92",
+      "executable": false
+    },
+    {
+      "url": "https://gitlab.com/exploit-database/exploitdb/-/raw/f08907b131f851c2ec3c052906f82ca83703ebef/LICENSE.md",
+      "path": "exploitdb/LICENSE.md",
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "executable": false
+    }
+  ],
+  "debs": [
+    {
+      "package": "libonig5",
+      "version": "6.9.9-1+b1",
+      "url": "https://deb.debian.org/debian/pool/main/libo/libonig/libonig5_6.9.9-1%2bb1_amd64.deb",
+      "sha256": "3abee130696244050500bcc7870e3b4cb82ddd87149ece3fd55010c3d4e1d18c",
+      "format": "deb"
+    },
+    {
+      "package": "libjq1",
+      "version": "1.7.1-6+deb13u4",
+      "url": "https://deb.debian.org/debian-security/pool/updates/main/j/jq/libjq1_1.7.1-6%2bdeb13u4_amd64.deb",
+      "sha256": "70bb2cbd66d5ada4349067ae9f61d0560b3b359d4203f2c051ca5773153ae0ba",
+      "format": "deb"
+    },
+    {
+      "package": "jq",
+      "version": "1.7.1-6+deb13u4",
+      "url": "https://deb.debian.org/debian-security/pool/updates/main/j/jq/jq_1.7.1-6%2bdeb13u4_amd64.deb",
+      "sha256": "7350392f700e20e46b7ae174a57f54e4ea106dd559753646d629b4e618bf2bff",
+      "format": "deb"
+    }
+  ],
+  "executables": [
+    "searchsploit"
+  ],
+  "runtime": {
+    "enableInternet": false,
+    "vcpu": 1,
+    "memoryMib": 512,
+    "diskMb": 3000
+  },
+  "files": false,
+  "dataRevision": "f08907b131f851c2ec3c052906f82ca83703ebef",
+  "referenceFiles": {
+    "searchsploit": "exploitdb/searchsploit",
+    ".searchsploit_rc": "exploitdb/.searchsploit_rc",
+    "files_exploits.csv": "exploitdb/files_exploits.csv",
+    "files_shellcodes.csv": "exploitdb/files_shellcodes.csv",
+    "LICENSE.md": "exploitdb/LICENSE.md"
+  },
+  "links": {
+    "searchsploit": "/opt/exploitdb/searchsploit"
+  }
+}

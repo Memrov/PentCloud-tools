@@ -4,8 +4,21 @@ import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("..", import.meta.url)),
   name = process.argv[2];
-if (!["http", "nuclei", "sqlmap"].includes(name))
-  throw new Error("Select http, nuclei or sqlmap");
+if (
+  ![
+    "http",
+    "nuclei",
+    "sqlmap",
+    "service",
+    "web-context",
+    "pcap",
+    "file-analysis",
+    "password",
+    "reference",
+    "metasploit",
+  ].includes(name)
+)
+  throw new Error("Select a supported tool pack");
 const lock = JSON.parse(
   readFileSync(root + "/packages/" + name + "/tools.lock.json"),
 );
@@ -45,8 +58,6 @@ run(regctl, [
   "",
   "--config-time",
   "set=2026-11-05T00:00:00Z",
-  "--layer-time",
-  "set=2026-11-05T00:00:00Z,base-layers=1",
   "--label",
   "org.opencontainers.image.version=" + lock.packVersion,
   "--label",

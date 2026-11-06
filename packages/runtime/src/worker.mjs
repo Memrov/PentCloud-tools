@@ -1,4 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
+import { prepareFiles } from "./index.mjs";
 const decode = (data) => new TextDecoder().decode(data);
 const hash = async (value) =>
   [
@@ -47,11 +48,13 @@ export function createRunner(lock, buildCommand) {
         container.start({
           image,
           instance: {
-            vcpu: 1,
-            memoryMib: lock.packId === "nuclei" ? 1024 : 512,
-            diskMb: 2000,
+            vcpu: lock.runtime?.vcpu ?? 1,
+            memoryMib:
+              lock.runtime?.memoryMib ??
+              (lock.packId === "nuclei" ? 1024 : 512),
+            diskMb: lock.runtime?.diskMb ?? 2000,
           },
-          enableInternet: true,
+          enableInternet: lock.runtime?.enableInternet ?? true,
           labels: { pack: lock.packId, version: lock.packVersion },
         });
       await container.setInactivityTimeout(120000);
@@ -91,16 +94,22 @@ export function createRunner(lock, buildCommand) {
         throw new Error("Unable to verify pack image identity");
       return { image, readyMs: Date.now() - start };
     }
-    run(input) {
-      const command = buildCommand(input),
+    run(input, files) {
+      const { requiredFiles = [], ...command } = buildCommand(input),
         tool = input.tool;
+      const prepared = prepareFiles(requiredFiles, files);
+      prepared.catch(() => {});
       return this.#serialize(async () => {
+        const attachments = await prepared;
         const startedAt = new Date().toISOString(),
           ready = await this.#ready();
         const output = await exec(
           this.ctx.container,
           [root + "/bin/pack-exec"],
-          JSON.stringify(command),
+          JSON.stringify({
+            ...command,
+            ...(Object.keys(attachments).length ? { files: attachments } : {}),
+          }),
           AbortSignal.timeout(90000),
         );
         if (output.exitCode !== 0)
@@ -135,6 +144,19 @@ export function createRunner(lock, buildCommand) {
       return this.#serialize(async () => {
         if (this.ctx.container.running) await this.ctx.container.destroy();
         return { stopped: !this.ctx.container.running };
+      });
+    }
+    capabilities() {
+      return this.#serialize(async () => {
+        const ready = await this.#ready();
+        const result = await exec(
+          this.ctx.container,
+          [root + "/bin/pack-exec", "--capabilities"],
+          undefined,
+          AbortSignal.timeout(10000),
+        );
+        if (result.exitCode !== 0) throw new Error("Capability probe failed");
+        return { ...JSON.parse(result.stdout), ...ready };
       });
     }
   };
