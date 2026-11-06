@@ -16,3 +16,14 @@ npm run typecheck
 Include the checks you ran and any limits in your pull request. Public CI uses synthetic fixtures. Runtime/profile changes additionally need the exact-image Cloudflare checks described in [release checks](docs/releases.md#release-checks), using only targets you are authorized to assess. Keep account and target credentials in native authentication or private secret stores.
 
 Dependabot monitors the root npm workspaces, Python coverage dependency, Go module and GitHub Actions. Scanner archives, datasets and base-image digests in `tools.lock.json` and `packages/*/tools.lock.json` require separate upstream, vulnerability and license review.
+
+## Local Snyk dependency scan
+
+After installing the development dependencies and following the [Snyk CLI authentication instructions](https://docs.snyk.io/developer-tools/snyk-cli/authenticate-to-use-the-cli), members of the `memrov` Snyk organization can run:
+
+```sh
+snyk auth
+snyk test --all-projects --dev --org=memrov --remote-repo-url=https://github.com/Memrov/PentCloud-tools
+```
+
+The public repository URL helps Snyk classify the scan correctly. Review scan errors and the manifests actually tested, including Go and Python alongside npm. Source dependency scanning does not inventory or scan bundled executables, datasets or base-image packages. Check the account's actual plan and usage before enabling additional products; open-source program benefits require eligibility. Keep CLI credentials outside Git. The existing GitHub app handles imported projects without a Snyk credential in Actions; inspect those projects before creating additional `snyk monitor` snapshots.

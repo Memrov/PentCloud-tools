@@ -2,6 +2,7 @@
 
 [![Quality](https://github.com/Memrov/PentCloud-tools/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/Memrov/PentCloud-tools/actions/workflows/quality.yml)
 [![CodeQL](https://github.com/Memrov/PentCloud-tools/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Memrov/PentCloud-tools/actions/workflows/codeql.yml)
+[![Snyk monitored](https://snyk.io/test/github/Memrov/PentCloud-tools/badge.svg)](https://snyk.io/test/github/Memrov/PentCloud-tools)
 [![codecov](https://codecov.io/gh/Memrov/PentCloud-tools/branch/main/graph/badge.svg)](https://app.codecov.io/gh/Memrov/PentCloud-tools)
 [![npm](https://badgen.net/npm/v/@memrov2/pentcloud-recon)](https://www.npmjs.com/package/@memrov2/pentcloud-recon)
 [![Adapter license: MIT](https://badgen.net/static/adapter%20license/MIT/blue)](LICENSE)
@@ -115,5 +116,7 @@ The [release table](docs/releases.md) lists the npm SDKs and their image-distrib
 [PentCloud](https://github.com/Memrov/PentCloud) owns application integration; [PentCloud-scopes](https://github.com/Memrov/PentCloud-scopes) supplies scope data. This repository supplies the adapters, execution helper and tool/image pins. Review each repository's checks and security policy for the component you use. [Contributing](CONTRIBUTING.md) explains validation, and [SECURITY.md](SECURITY.md) links to private reporting.
 
 The badges link to live source checks, coverage, the recon npm version and the adapter license. CodeQL analyzes Actions, JavaScript/TypeScript, Go and Python; PR dependency review rejects newly introduced high or critical vulnerabilities in dependencies visible to GitHub. These checks do not establish safety of a target assessment.
+
+The existing Snyk GitHub integration in the `memrov` organization checks imported dependency projects. Its badge currently says **monitored**, rather than reporting a vulnerability count. Inspect the `security/snyk (memrov)` PR report: **No manifest changes detected** is a passing result, not a fresh scan of every dependency. Imported source manifests do not establish vulnerability coverage of the bundled scanner executables or operating-system image. See [contributing](CONTRIBUTING.md#local-snyk-dependency-scan) for a local dependency scan.
 
 GitHub's [dependency graph and SBOM export](https://github.com/Memrov/PentCloud-tools/network/dependencies) cover recognized source manifests. Scanner executables, datasets and base-image contents need their own inventories and review. Published 0.1.0 npm packages have registry signatures but no build-provenance attestations. See [release verification](docs/releases.md#verification-and-dependency-inventory) for the current evidence and its limits.
