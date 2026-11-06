@@ -18,7 +18,7 @@ The Python dependency is development-only. `PENTCLOUD_COVERAGE_PYTHON` may name 
 
 | Report | Format | Scope |
 | --- | --- | --- |
-| `javascript.lcov` | LCOV from Node's built-in test runner | Shipped JavaScript in `src/`, including unexecuted files |
+| `javascript.lcov` | LCOV from Node's built-in test runner | Shipped JavaScript in `src/` and `packages/*/src/`, including unexecuted files |
 | `go.out` | Native Go coverprofile, with race detector | The execution helper, including protocol parsing and process/output handling |
 | `python.xml` | Cobertura XML from coverage.py | Image preparation, checksum/license handling and staging hygiene |
 

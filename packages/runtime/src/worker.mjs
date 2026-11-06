@@ -1,0 +1,141 @@
+import { DurableObject } from "cloudflare:workers";
+const decode = (data) => new TextDecoder().decode(data);
+const hash = async (value) =>
+  [
+    ...new Uint8Array(
+      await crypto.subtle.digest(
+        "SHA-256",
+        new TextEncoder().encode(JSON.stringify(value)),
+      ),
+    ),
+  ]
+    .map((x) => x.toString(16).padStart(2, "0"))
+    .join("");
+async function exec(container, argv, body, signal) {
+  const process = await container.exec(argv, {
+    signal,
+    ...(body ? { stdin: new Blob([body]).stream() } : {}),
+  });
+  const result = await process.output();
+  return {
+    exitCode: result.exitCode,
+    stdout: decode(result.stdout),
+    stderr: decode(result.stderr),
+  };
+}
+export function createRunner(lock, buildCommand) {
+  const root = "/opt/pentcloud-" + lock.packId;
+  return class ToolRunner extends DurableObject {
+    #queue = Promise.resolve();
+    #serialize(action) {
+      const result = this.#queue.then(action);
+      this.#queue = result.catch(() => {});
+      return result;
+    }
+    async #ready() {
+      const container = this.ctx.container,
+        image = container.images[lock.packId],
+        start = Date.now();
+      if (!image)
+        throw new Error("Configure the " + lock.packId + " named image");
+      if (container.running) {
+        if ((await container.inspect())?.image !== image)
+          throw new Error(
+            "Image changed; stop the current runtime before upgrading",
+          );
+      } else
+        container.start({
+          image,
+          instance: {
+            vcpu: 1,
+            memoryMib: lock.packId === "nuclei" ? 1024 : 512,
+            diskMb: 2000,
+          },
+          enableInternet: true,
+          labels: { pack: lock.packId, version: lock.packVersion },
+        });
+      await container.setInactivityTimeout(120000);
+      const signal = AbortSignal.timeout(90000);
+      while (true) {
+        try {
+          if (
+            (await exec(container, ["/bin/true"], undefined, signal))
+              .exitCode === 0
+          )
+            break;
+        } catch (error) {
+          if (signal.aborted)
+            throw new Error("Container readiness exceeded 90 seconds");
+        }
+        if (signal.aborted || Date.now() - start >= 90000)
+          throw new Error("Container readiness exceeded 90 seconds");
+        await new Promise((resolve) =>
+          setTimeout(resolve, Math.min(1000, 90000 - (Date.now() - start))),
+        );
+      }
+      const marker = await exec(
+        container,
+        ["/bin/cat", root + "/pack.json"],
+        undefined,
+        signal,
+      );
+      let release;
+      try {
+        release = JSON.parse(marker.stdout);
+      } catch {
+        throw new Error("Invalid pack image manifest");
+      }
+      if (marker.exitCode !== 0 || release.lockSha256 !== (await hash(lock)))
+        throw new Error("Pack image and SDK pins do not match");
+      if ((await container.inspect())?.image !== image)
+        throw new Error("Unable to verify pack image identity");
+      return { image, readyMs: Date.now() - start };
+    }
+    run(input) {
+      const command = buildCommand(input),
+        tool = input.tool;
+      return this.#serialize(async () => {
+        const startedAt = new Date().toISOString(),
+          ready = await this.#ready();
+        const output = await exec(
+          this.ctx.container,
+          [root + "/bin/pack-exec"],
+          JSON.stringify(command),
+          AbortSignal.timeout(90000),
+        );
+        if (output.exitCode !== 0)
+          throw new Error("Pack execution helper failed");
+        let result;
+        try {
+          result = JSON.parse(output.stdout);
+        } catch {
+          throw new Error("Invalid pack execution response");
+        }
+        if (
+          !Number.isInteger(result.exitCode) ||
+          typeof result.stdout !== "string" ||
+          typeof result.stderr !== "string" ||
+          typeof result.timedOut !== "boolean" ||
+          typeof result.truncated !== "boolean"
+        )
+          throw new Error("Incomplete pack execution response");
+        return {
+          ...result,
+          ...ready,
+          tool,
+          toolVersion: lock.tools.find((t) => t.tool === tool).version,
+          packId: lock.packId,
+          packVersion: lock.packVersion,
+          startedAt,
+          finishedAt: new Date().toISOString(),
+        };
+      });
+    }
+    stop() {
+      return this.#serialize(async () => {
+        if (this.ctx.container.running) await this.ctx.container.destroy();
+        return { stopped: !this.ctx.container.running };
+      });
+    }
+  };
+}

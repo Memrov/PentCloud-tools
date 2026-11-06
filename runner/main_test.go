@@ -152,3 +152,13 @@ func TestProtocolReturnsStructuredExecutionFailure(t *testing.T) {
 		t.Fatalf("wrong protocol response: %d %s", code, out)
 	}
 }
+
+func TestPackBuildConfigurationRejectsOtherPackExecutables(t *testing.T) {
+	old := executableNames
+	executableNames = "curl,openssl,ffuf"
+	t.Cleanup(func() { executableNames = old })
+	r := execute(input(1000), fixture(t, "echo should-not-run\n"))
+	if r.Error != "Unsupported executable" || r.Stdout != "" {
+		t.Fatalf("another pack's executable was accepted: %+v", r)
+	}
+}

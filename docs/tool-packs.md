@@ -2,7 +2,7 @@
 
 PentCloud tools groups compatible tools into small runtimes according to their dependencies, execution lifetime and evidence needs. A pack can serve several agent roles; it is not a separate container image for each agent.
 
-Only the **recon pack 0.1.0** is released and Cloudflare-tested. All other packs below are candidates, not supported releases. PentCloud's current application continues using its existing Kali integration until a replacement passes an application integration test.
+Only the **recon pack 0.1.0** is released and Cloudflare-tested. The HTTP, Nuclei and SQLmap [candidate adapters](bundles.md) now exist as separate workspaces; they remain unreleased. Other packs below are proposals, not supported releases. PentCloud's current application continues using its existing Kali integration until a replacement passes an application integration test.
 
 ## Start with what agents actually need
 

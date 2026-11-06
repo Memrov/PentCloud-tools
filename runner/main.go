@@ -16,7 +16,11 @@ import (
 	"time"
 )
 
-const binDirectory = "/opt/pentcloud-recon/bin"
+// Pack builds set these at link time; request input cannot change them.
+var binDirectory = "/opt/pentcloud-recon/bin"
+var executableNames = "httpx,dnsx,katana,subfinder"
+var runtimeHome = "/tmp/pentcloud-recon"
+
 const outputLimit = 2 * 1024 * 1024
 
 type Input struct {
@@ -83,7 +87,13 @@ func execute(in Input, binDir string) Result {
 		return r
 	}
 	name := filepath.Base(in.Argv[0])
-	if (name != "httpx" && name != "dnsx" && name != "katana" && name != "subfinder") || in.Argv[0] != binDirectory+"/"+name {
+	allowed := false
+	for _, executable := range strings.Split(executableNames, ",") {
+		if name == executable {
+			allowed = true
+		}
+	}
+	if !allowed || in.Argv[0] != binDirectory+"/"+name {
 		r.Error = "Unsupported executable"
 		return r
 	}
@@ -105,8 +115,8 @@ func execute(in Input, binDir string) Result {
 		}
 		return err
 	}
-	cmd.Env = []string{"PATH=" + binDirectory + ":/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", "HOME=/tmp/pentcloud-recon", "NO_COLOR=1", "GOMAXPROCS=1"}
-	if err := os.MkdirAll("/tmp/pentcloud-recon", 0700); err != nil {
+	cmd.Env = []string{"PATH=" + binDirectory + ":/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", "HOME=" + runtimeHome, "NO_COLOR=1", "GOMAXPROCS=1", "PYTHONDONTWRITEBYTECODE=1"}
+	if err := os.MkdirAll(runtimeHome, 0700); err != nil {
 		r.Error = "Cannot create runtime home"
 		return r
 	}

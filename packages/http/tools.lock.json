@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "packVersion": "0.1.0",
+  "platform": "linux/amd64",
+  "packId": "http",
+  "baseImage": "docker.io/alpine/curl@sha256:96a0479d24c465a7d8d29ebf5ebe92b82536e8443a870d2654e66d3ac235441f",
+  "tools": [
+    {
+      "tool": "ffuf",
+      "version": "v2.3.0",
+      "url": "https://github.com/ffuf/ffuf/releases/download/v2.3.0/ffuf_2.3.0_linux_amd64.tar.gz",
+      "sha256": "b2a3c725fcb9da175159682f54d6e9149f2905b00d84d155e7efc5d599975ceb",
+      "binarySha256": "4b52c335d166cfb9a7ed0f1d8c5626f00d0c8510c3aeb4097bd60acba94ea52f",
+      "format": "tar.gz",
+      "member": "ffuf"
+    },
+    {
+      "tool": "curl",
+      "version": "8.23.0"
+    },
+    {
+      "tool": "openssl",
+      "version": "3.5.9"
+    }
+  ],
+  "assets": [
+    {
+      "url": "https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86_64/openssl-3.5.9-r0.apk",
+      "sha256": "80332be2dcd7a9a0408a1eeca8efd4b66adf8f79d1e99d7022d3be4a34433c4a",
+      "path": "openssl.apk",
+      "format": "apk-openssl"
+    },
+    {
+      "path": "paths.txt",
+      "local": "packages/http/assets/paths.txt",
+      "sha256": "7c08228f52cd075fe7425dbf1b3c0d6d1c988332d1d9730822539a644094eb14"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/curl/curl/curl-8_23_0/COPYING",
+      "path": "licenses/curl-COPYING",
+      "sha256": "82f2f4427d6545ee5aaac4f0b80428da6cc8ba41c2cf5da3a03680ec327b9681"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.5.9/LICENSE.txt",
+      "path": "licenses/openssl-LICENSE.txt",
+      "sha256": "7d5450cb2d142651b8afa315b5f238efc805dad827d91ba367d8516bc9d49e7a"
+    }
+  ],
+  "executables": ["ffuf", "curl", "openssl"]
+}

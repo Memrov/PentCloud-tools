@@ -1,0 +1,72 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "pentcloud-bundles-example",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-11-05",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": {
+    "enabled": false,
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "HTTP",
+        "class_name": "HttpRunner",
+      },
+      {
+        "name": "NUCLEI",
+        "class_name": "NucleiRunner",
+      },
+      {
+        "name": "SQLMAP",
+        "class_name": "SqlmapRunner",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["HttpRunner", "NucleiRunner", "SqlmapRunner"],
+    },
+  ],
+  "workflows": [
+    {
+      "name": "pentcloud-bundles-example",
+      "binding": "TOOLS",
+      "class_name": "ToolWorkflow",
+    },
+  ],
+  "containers": [
+    {
+      "class_name": "HttpRunner",
+      "scheduling_policy": "durable_object",
+      "images": {
+        "http": {
+          "dockerfile": "../../images/http/Dockerfile",
+          "build_context": "../..",
+        },
+      },
+    },
+    {
+      "class_name": "NucleiRunner",
+      "scheduling_policy": "durable_object",
+      "images": {
+        "nuclei": {
+          "dockerfile": "../../images/nuclei/Dockerfile",
+          "build_context": "../..",
+        },
+      },
+    },
+    {
+      "class_name": "SqlmapRunner",
+      "scheduling_policy": "durable_object",
+      "images": {
+        "sqlmap": {
+          "dockerfile": "../../images/sqlmap/Dockerfile",
+          "build_context": "../..",
+        },
+      },
+    },
+  ],
+}

@@ -100,3 +100,5 @@ MIT license for the PentCloud adapter. Included executables and base-image packa
 See [tool packs and agent capabilities](docs/tool-packs.md) for the current Kali interface inventory, the needs of each agent, and the proposed next bundles. Candidate tools are clearly separated from released support.
 
 Run `npm run coverage` after the development setup in [testing and coverage](docs/testing.md). Reports use standard Node LCOV, Go coverprofile and Python Cobertura formats. Codecov configuration is included; service authentication and CI selection must be completed before its checks are active.
+
+Three additional [candidate bundles](docs/bundles.md) provide HTTP investigation, selected Nuclei templates and focused SQLmap testing. They are separate workspace packages and images; recon remains the only published release.

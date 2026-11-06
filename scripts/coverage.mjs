@@ -1,4 +1,4 @@
-import { mkdirSync } from "node:fs";
+import { mkdirSync, readdirSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
@@ -24,12 +24,15 @@ run(process.execPath, [
   "--test",
   "--experimental-test-coverage",
   "--test-coverage-include=src/*.mjs",
+  "--test-coverage-include=packages/*/src/*.mjs",
   "--test-coverage-include-all",
   "--test-reporter=spec",
   "--test-reporter-destination=stdout",
   "--test-reporter=lcov",
   "--test-reporter-destination=.cache/coverage/javascript.lcov",
-  ...["test/commands.test.mjs", "test/runtime.test.mjs"],
+  ...readdirSync(new URL("../test/", import.meta.url))
+    .filter((name) => name.endsWith(".test.mjs"))
+    .map((name) => "test/" + name),
 ]);
 run("go", [
   "test",
