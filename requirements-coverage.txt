@@ -1,2 +1,2 @@
 # Development-only reporting; supports the existing Python 3.9+ build tooling.
-coverage==7.10.7
+coverage==7.17.1
