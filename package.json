@@ -31,7 +31,11 @@
     "image:build": "node scripts/build-image.mjs",
     "prepublishOnly": "npm test && npm run test:runner && npm run test:image && npm run typecheck",
     "typecheck": "wrangler types --config examples/cloudflare/wrangler.jsonc .cache/worker-types.d.ts && tsc --noEmit --strict --skipLibCheck --module nodenext --moduleResolution nodenext --target es2022 .cache/worker-types.d.ts test/types.ts",
-    "test:image": "python3 -m unittest discover -s test -p \"*_test.py\""
+    "test:image": "python3 -m unittest discover -s test -p \"*_test.py\"",
+    "coverage": "node scripts/coverage.mjs",
+    "test:bundles": "node --test test/packs.test.mjs test/pack-runtime.test.mjs",
+    "image:pack": "python3 scripts/prepare-pack.py",
+    "image:pack:build": "node scripts/build-pack.mjs"
   },
   "engines": {
     "node": ">=22"
@@ -42,5 +46,8 @@
   "devDependencies": {
     "typescript": "5.9.3",
     "wrangler": "4.157.0"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

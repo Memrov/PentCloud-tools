@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "packId": "web-context",
+  "packVersion": "0.1.0",
+  "platform": "linux/amd64",
+  "baseImage": "docker.io/library/debian@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2",
+  "tools": [
+    {
+      "tool": "whatweb",
+      "version": "v0.6.4",
+      "url": "https://codeload.github.com/urbanadventurer/WhatWeb/tar.gz/refs/tags/v0.6.4",
+      "format": "source-tar",
+      "destination": "whatweb",
+      "sha256": "611cde154ad864ffc430ac34e87ca746dbe0f0cc47a116ba06de3cb61e923b15"
+    },
+    {
+      "tool": "waybackurls",
+      "version": "v0.1.0",
+      "url": "https://github.com/tomnomnom/waybackurls/releases/download/v0.1.0/waybackurls-linux-amd64-0.1.0.tgz",
+      "format": "tar.gz",
+      "member": "waybackurls",
+      "sha256": "884786132d11c8eb838fc88626dad96494207c79e436a72870a7d69f147500a6",
+      "binarySha256": "da25f8f96987d59ceb85097ebd277cd79ec2f9e2e6d33bb391d42b8623f7d657",
+      "licenseMissing": true
+    }
+  ],
+  "assets": [
+    {
+      "url": "https://raw.githubusercontent.com/tomnomnom/waybackurls/v0.1.0/README.mkd",
+      "path": "notices/waybackurls-README.mkd",
+      "sha256": "ffdf6f50d0cab97eee8d37b6739fa49bd94708e4955cf538f59a7c7c7929b24b"
+    }
+  ],
+  "debs": [
+    {
+      "package": "openssl",
+      "version": "3.5.7-1~deb13u3",
+      "url": "https://deb.debian.org/debian-security/pool/updates/main/o/openssl/openssl_3.5.7-1%7edeb13u3_amd64.deb",
+      "sha256": "43a9cbcf2a8a0e1f0a1c3f5a33ee1f56b269690e7a2129f2b2d0582e789589d7",
+      "format": "deb"
+    },
+    {
+      "package": "ca-certificates",
+      "version": "20250419+deb13u1",
+      "url": "https://deb.debian.org/debian-security/pool/updates/main/c/ca-certificates/ca-certificates_20250419%2bdeb13u1_all.deb",
+      "sha256": "c10585ac22c7f617a73d394eea29ba71d0356f350ae973b19043d1b017f80f54",
+      "format": "deb"
+    },
+    {
+      "package": "libffi8",
+      "version": "3.4.8-2",
+      "url": "https://deb.debian.org/debian/pool/main/libf/libffi/libffi8_3.4.8-2_amd64.deb",
+      "sha256": "0ebdc340de33333639c3c63874cd4b15ac2e83dfa1ef3053b7eefaf4919f4f68",
+      "format": "deb"
+    },
+    {
+      "package": "rubygems-integration",
+      "version": "1.19",
+      "url": "https://deb.debian.org/debian/pool/main/r/rubygems-integration/rubygems-integration_1.19_all.deb",
+      "sha256": "ca8c600505bd4c5046b2c60fbf964d6f4eb08db86eb77526a3de0315f1222afe",
+      "format": "deb"
+    },
+    {
+      "package": "ruby3.3",
+      "version": "3.3.8-2",
+      "url": "https://deb.debian.org/debian/pool/main/r/ruby3.3/ruby3.3_3.3.8-2_amd64.deb",
+      "sha256": "10798ffe8edc86d7f9491655a115049a7a77dfbef5dc909dc13803cbb6c47f9b",
+      "format": "deb"
+    },
+    {
+      "package": "ruby-rubygems",
+      "version": "3.6.7-2",
+      "url": "https://deb.debian.org/debian/pool/main/r/rubygems/ruby-rubygems_3.6.7-2_all.deb",
+      "sha256": "a585dd934ffc58516c468cc06fe10141d1383f96bf1113a25397f0ac043253a1",
+      "format": "deb"
+    },
+    {
+      "package": "ruby",
+      "version": "1:3.3+b1",
+      "url": "https://deb.debian.org/debian/pool/main/r/ruby-defaults/ruby_3.3%2bb1_amd64.deb",
+      "sha256": "3d67e2079ac7e1842f4abecfa2ac8263a6761daa91f06559d6d2d1f897d0576d",
+      "format": "deb"
+    },
+    {
+      "package": "rake",
+      "version": "13.2.1-1",
+      "url": "https://deb.debian.org/debian/pool/main/r/rake/rake_13.2.1-1_all.deb",
+      "sha256": "6080dff69fe4fa4f1419d2326a2004e21cc696b37a03c0c96e5e8c42c3e9e477",
+      "format": "deb"
+    },
+    {
+      "package": "ruby-csv",
+      "version": "3.3.4-1",
+      "url": "https://deb.debian.org/debian/pool/main/r/ruby-csv/ruby-csv_3.3.4-1_all.deb",
+      "sha256": "6367f942bcffb869ba78996a2be4b4f12c93ad2b345f5750a3112a1127293125",
+      "format": "deb"
+    },
+    {
+      "package": "ruby-did-you-mean",
+      "version": "1.6.3-2",
+      "url": "https://deb.debian.org/debian/pool/main/r/ruby-did-you-mean/ruby-did-you-mean_1.6.3-2_all.deb",
+      "sha256": "8c193ed0b6fa3a803b7643dd840cab1a6d1e665bcc212accce8a8ea1deeee615",
+      "format": "deb"
+    },
+    {
+      "package": "ruby-net-telnet",
+      "version": "0.2.0-1",
+      "url": "https://deb.debian.org/debian/pool/main/r/ruby-net-telnet/ruby-net-telnet_0.2.0-1_all.deb",
+      "sha256": "e8a5b95e359894fbca0fa1cc70cdd349c125f43e883775491735a44ced957256",
+      "format": "deb"
+    },
+    {
+      "package": "ruby-ruby2-keywords",
+      "version": "0.0.5-1",
+      "url": "https://deb.debian.org/debian/pool/main/r/ruby-ruby2-keywords/ruby-ruby2-keywords_0.0.5-1_all.deb",
+      "sha256": "a2806f226a72c5be7cfd33eb35fbcf1aa33c136d48802af7fcd5897f54417b8b",
+      "format": "deb"
+    },
+    {
+      "package": "ruby-webrick",
+      "version": "1.9.1-1",
+      "url": "https://deb.debian.org/debian/pool/main/r/ruby-webrick/ruby-webrick_1.9.1-1_all.deb",
+      "sha256": "e8eff1ea6cb255ad89e4820db763c23facdad634615cab08a8fe883d9640ab7b",
+      "format": "deb"
+    },
+    {
+      "package": "ruby-xmlrpc",
+      "version": "0.3.3-2",
+      "url": "https://deb.debian.org/debian/pool/main/r/ruby-xmlrpc/ruby-xmlrpc_0.3.3-2_all.deb",
+      "sha256": "c2735a4c93ea68e453108c3524506796663a74975df63fc3cffb2847e3c30b0b",
+      "format": "deb"
+    },
+    {
+      "package": "libyaml-0-2",
+      "version": "0.2.5-2",
+      "url": "https://deb.debian.org/debian/pool/main/liby/libyaml/libyaml-0-2_0.2.5-2_amd64.deb",
+      "sha256": "8a5475402801de445a17887bb72d03613565a6a84b216b4b606d1462c613eeb2",
+      "format": "deb"
+    },
+    {
+      "package": "libruby3.3",
+      "version": "3.3.8-2",
+      "url": "https://deb.debian.org/debian/pool/main/r/ruby3.3/libruby3.3_3.3.8-2_amd64.deb",
+      "sha256": "033d7f7359da6353d29e5cb87ef411357d3841c02fd7d1089897653fec665289",
+      "format": "deb"
+    },
+    {
+      "package": "libruby",
+      "version": "1:3.3+b1",
+      "url": "https://deb.debian.org/debian/pool/main/r/ruby-defaults/libruby_3.3%2bb1_amd64.deb",
+      "sha256": "3548d8ef339f73c59c556f2c397b3222cecb56d726e61e9d6d1eb8495e2e4179",
+      "format": "deb"
+    },
+    {
+      "package": "publicsuffix",
+      "version": "20250328.1952-0.1",
+      "url": "https://deb.debian.org/debian/pool/main/p/publicsuffix/publicsuffix_20250328.1952-0.1_all.deb",
+      "sha256": "80b5b3959ddf1c54c82001380aab866fa9964274a59a7f169110c8a036e40864",
+      "format": "deb"
+    },
+    {
+      "package": "ruby-public-suffix",
+      "version": "6.0.1-1",
+      "url": "https://deb.debian.org/debian/pool/main/r/ruby-public-suffix/ruby-public-suffix_6.0.1-1_all.deb",
+      "sha256": "3b936b0389547bc3a824f220c92193f4753a544466a8e374f01f9462f1edb4dd",
+      "format": "deb"
+    },
+    {
+      "package": "ruby-addressable",
+      "version": "2.8.7-2",
+      "url": "https://deb.debian.org/debian/pool/main/r/ruby-addressable/ruby-addressable_2.8.7-2_all.deb",
+      "sha256": "3826754d24722ae5376af043b703cd8d8ce2c2beccb6bc397ef7187b6a44022f",
+      "format": "deb"
+    },
+    {
+      "package": "ruby-ipaddress",
+      "version": "0.8.3-5",
+      "url": "https://deb.debian.org/debian/pool/main/r/ruby-ipaddress/ruby-ipaddress_0.8.3-5_all.deb",
+      "sha256": "bca3d0499f3260510c352c08e25f757635452ebc61be6ed547ce9744c3b5c1a4",
+      "format": "deb"
+    },
+    {
+      "package": "whatweb",
+      "version": "0.5.5-1",
+      "url": "https://deb.debian.org/debian/pool/main/w/whatweb/whatweb_0.5.5-1_all.deb",
+      "sha256": "9a9e233d4a5340e9899b44aada049a5212bfae90a98ad7525b7d109f150afd78",
+      "format": "deb"
+    }
+  ],
+  "executables": [
+    "whatweb",
+    "waybackurls"
+  ],
+  "runtime": {
+    "enableInternet": true,
+    "vcpu": 1,
+    "memoryMib": 512,
+    "diskMb": 3000
+  },
+  "files": false,
+  "privateOnlyReasons": [
+    "WaybackURLs release has no detected license grant; resolve redistribution before public image publication"
+  ],
+  "links": {
+    "whatweb": "/usr/bin/ruby"
+  }
+}

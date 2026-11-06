@@ -1,0 +1,11 @@
+[run]
+branch = True
+relative_files = True
+data_file = .cache/coverage/python.data
+source = scripts
+
+[report]
+show_missing = True
+
+[xml]
+output = .cache/coverage/python.xml

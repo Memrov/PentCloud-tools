@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "packVersion": "0.1.0",
+  "platform": "linux/amd64",
+  "packId": "sqlmap",
+  "baseImage": "docker.io/library/python@sha256:bdd0cc97663b9b920570d0f1b4601ee18ed895221a0594ca1d9b5e2f26adba83",
+  "tools": [
+    {
+      "tool": "sqlmap",
+      "version": "1.10",
+      "url": "https://codeload.github.com/sqlmapproject/sqlmap/tar.gz/refs/tags/1.10",
+      "format": "sqlmap-tar",
+      "sha256": "aea3bf921d9a2466bc0e33cf43bc941f527eabf7981ec1de104220def3a1cba4"
+    }
+  ],
+  "assets": [],
+  "executables": ["sqlmap"]
+}

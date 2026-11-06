@@ -1,0 +1,12 @@
+robots.txt
+.well-known/security.txt
+api/
+openapi.json
+swagger.json
+.git/config
+.env
+health
+status
+admin/
+login
+backup.zip

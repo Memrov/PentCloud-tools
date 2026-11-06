@@ -1,0 +1,53 @@
+name: Quality
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit:
+    name: Unit tests and types
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.12.1
+          cache: npm
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: 1.26.5
+          cache: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.13'
+      - name: Install development dependencies
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          python -m pip install --disable-pip-version-check -r requirements-coverage.txt
+      # Synthetic unit fixtures only. No deployed scanners, cloud account or target secrets.
+      - name: Test and collect coverage
+        run: npm run coverage
+      - name: Check public types
+        run: npm run typecheck
+      - name: Upload explicit unit reports
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: .cache/coverage/javascript.lcov,.cache/coverage/go.out,.cache/coverage/python.xml
+          disable_search: true
+          fail_ci_if_error: true
+          name: unit-coverage

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "packVersion": "0.1.0",
+  "platform": "linux/amd64",
+  "packId": "nuclei",
+  "baseImage": "docker.io/library/alpine@sha256:85f2b723e106c34644cd5851d7e81ee87da98ac54672b29947c052a45d31dc2f",
+  "tools": [
+    {
+      "tool": "nuclei",
+      "version": "v3.11.1",
+      "url": "https://github.com/projectdiscovery/nuclei/releases/download/v3.11.1/nuclei_3.11.1_linux_amd64.zip",
+      "sha256": "ea63d4ae232808cd7c6bc00d0142428e231fab59dae01042246097d195835ab6",
+      "binarySha256": "c49588140f357cbdddd5436dec11201953a4c5390faeec90777f9ee2cfd70251",
+      "format": "zip",
+      "member": "nuclei"
+    }
+  ],
+  "assets": [
+    {
+      "url": "https://raw.githubusercontent.com/projectdiscovery/nuclei-templates/21dedc3f3d4e52c8421aa4cfe34a26f33450abeb/http/exposures/configs/git-config.yaml",
+      "sha256": "bd8bdfa0b5ed5bf4d3712edb793adfd0987d9282e51c6f7d673bf14b9e4dd524",
+      "path": "exposures/git-config.yaml"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/projectdiscovery/nuclei-templates/21dedc3f3d4e52c8421aa4cfe34a26f33450abeb/http/exposures/configs/laravel-env.yaml",
+      "sha256": "37566f5fb1764be65072836390d4ff3f40af4917ecf00bdb08dbfcf862bb09c7",
+      "path": "exposures/laravel-env.yaml"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/projectdiscovery/nuclei-templates/21dedc3f3d4e52c8421aa4cfe34a26f33450abeb/http/exposures/files/ds-store-file.yaml",
+      "sha256": "eeaa88a701796f263e8e4c32a5d16ae3e18b2cc97d65338632e4ac8b9e49b7a8",
+      "path": "exposures/ds-store-file.yaml"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/projectdiscovery/nuclei-templates/21dedc3f3d4e52c8421aa4cfe34a26f33450abeb/LICENSE.md",
+      "sha256": "5fa6644d2dd1987a79c06f4af210d2cf8cfc4ee799999029d0f9980c9cf95a2c",
+      "path": "licenses/nuclei-templates-LICENSE.md"
+    }
+  ],
+  "templateRevision": "21dedc3f3d4e52c8421aa4cfe34a26f33450abeb",
+  "executables": ["nuclei"]
+}

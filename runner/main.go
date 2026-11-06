@@ -3,6 +3,9 @@ package main
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -16,27 +19,38 @@ import (
 	"time"
 )
 
-const binDirectory = "/opt/pentcloud-recon/bin"
+// Pack builds set these at link time; request input cannot change them.
+var binDirectory = "/opt/pentcloud-recon/bin"
+var executableNames = "httpx,dnsx,katana,subfinder"
+var runtimeHome = "/tmp/pentcloud-recon"
+var allowFiles = "false"
+
 const outputLimit = 2 * 1024 * 1024
 
 type Input struct {
-	Argv      []string `json:"argv"`
-	Stdin     string   `json:"stdin"`
-	TimeoutMs int      `json:"timeoutMs"`
+	Argv      []string             `json:"argv"`
+	Stdin     string               `json:"stdin"`
+	TimeoutMs int                  `json:"timeoutMs"`
+	Files     map[string]FileInput `json:"files,omitempty"`
+}
+type FileInput struct {
+	Base64 string `json:"base64"`
+	SHA256 string `json:"sha256"`
 }
 type Result struct {
-	Argv        []string `json:"argv"`
-	ExitCode    int      `json:"exitCode"`
-	Stdout      string   `json:"stdout"`
-	Stderr      string   `json:"stderr"`
-	TimedOut    bool     `json:"timedOut"`
-	Truncated   bool     `json:"truncated"`
-	Error       string   `json:"error,omitempty"`
-	ProcessMs   int64    `json:"processMs"`
-	FirstJSONMs int64    `json:"firstJSONMs"`
-	CPUUserMs   int64    `json:"cpuUserMs"`
-	CPUSystemMs int64    `json:"cpuSystemMs"`
-	MaxRSSKiB   int64    `json:"maxRSSKiB"`
+	Argv        []string          `json:"argv"`
+	ExitCode    int               `json:"exitCode"`
+	Stdout      string            `json:"stdout"`
+	Stderr      string            `json:"stderr"`
+	TimedOut    bool              `json:"timedOut"`
+	Truncated   bool              `json:"truncated"`
+	Error       string            `json:"error,omitempty"`
+	ProcessMs   int64             `json:"processMs"`
+	FirstJSONMs int64             `json:"firstJSONMs"`
+	CPUUserMs   int64             `json:"cpuUserMs"`
+	CPUSystemMs int64             `json:"cpuSystemMs"`
+	MaxRSSKiB   int64             `json:"maxRSSKiB"`
+	InputHashes map[string]string `json:"inputHashes,omitempty"`
 }
 type capture struct {
 	mu        sync.Mutex
@@ -83,7 +97,13 @@ func execute(in Input, binDir string) Result {
 		return r
 	}
 	name := filepath.Base(in.Argv[0])
-	if (name != "httpx" && name != "dnsx" && name != "katana" && name != "subfinder") || in.Argv[0] != binDirectory+"/"+name {
+	allowed := false
+	for _, executable := range strings.Split(executableNames, ",") {
+		if name == executable {
+			allowed = true
+		}
+	}
+	if !allowed || in.Argv[0] != binDirectory+"/"+name {
 		r.Error = "Unsupported executable"
 		return r
 	}
@@ -105,10 +125,61 @@ func execute(in Input, binDir string) Result {
 		}
 		return err
 	}
-	cmd.Env = []string{"PATH=" + binDirectory + ":/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", "HOME=/tmp/pentcloud-recon", "NO_COLOR=1", "GOMAXPROCS=1"}
-	if err := os.MkdirAll("/tmp/pentcloud-recon", 0700); err != nil {
+	cmd.Env = []string{"PATH=" + binDirectory + ":/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin", "HOME=" + runtimeHome, "NO_COLOR=1", "GOMAXPROCS=1", "PYTHONDONTWRITEBYTECODE=1"}
+	if name == "hashcat" {
+		cmd.Env = append(cmd.Env, "POCL_MAX_PTHREAD_COUNT=2", "POCL_CPU_MAX_CU_COUNT=2")
+	}
+	if err := os.MkdirAll(runtimeHome, 0700); err != nil {
 		r.Error = "Cannot create runtime home"
 		return r
+	}
+	if info, err := os.Lstat(runtimeHome); err != nil || !info.IsDir() || info.Mode()&os.ModeSymlink != 0 {
+		r.Error = "Unsafe runtime home"
+		return r
+	}
+	if len(in.Files) > 0 {
+		if allowFiles != "true" {
+			r.Error = "Files are disabled for this pack"
+			return r
+		}
+		total := 0
+		r.InputHashes = map[string]string{}
+		for name, file := range in.Files {
+			if name != "input" && name != "dictionary" {
+				r.Error = "Unsupported input file"
+				return r
+			}
+			if len(file.Base64) > 2796204 {
+				r.Error = "Input files exceed two MiB"
+				return r
+			}
+			body, err := base64.StdEncoding.DecodeString(file.Base64)
+			total += len(body)
+			if err != nil || len(body) == 0 || total > 2097152 {
+				r.Error = "Invalid or oversized input file"
+				return r
+			}
+			digest := sha256.Sum256(body)
+			encoded := hex.EncodeToString(digest[:])
+			if encoded != file.SHA256 {
+				r.Error = "File checksum mismatch"
+				return r
+			}
+			path := filepath.Join(runtimeHome, name+".bin")
+			f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC|syscall.O_NOFOLLOW, 0600)
+			if err != nil {
+				r.Error = "Cannot prepare input file"
+				return r
+			}
+			defer os.Remove(path)
+			_, err = f.Write(body)
+			closeErr := f.Close()
+			if err != nil || closeErr != nil {
+				r.Error = "Cannot write input file"
+				return r
+			}
+			r.InputHashes[name] = encoded
+		}
 	}
 	out := &capture{start: start, cancel: cancel}
 	stderr := &capture{start: start, cancel: cancel}
@@ -167,8 +238,27 @@ func execute(in Input, binDir string) Result {
 	return r
 }
 func main() {
+	if len(os.Args) == 2 && os.Args[1] == "--capabilities" {
+		result := map[string]any{"platform": runtime.GOOS, "architecture": runtime.GOARCH, "rawPacketSocket": false}
+		if runtime.GOOS == "linux" {
+			fd, err := syscall.Socket(17, syscall.SOCK_RAW, 0x0300)
+			if err == nil {
+				result["rawPacketSocket"] = true
+				_ = syscall.Close(fd)
+			} else {
+				result["rawPacketError"] = err.Error()
+			}
+		}
+		_ = json.NewEncoder(os.Stdout).Encode(result)
+		return
+	}
 	var in Input
-	d := json.NewDecoder(io.LimitReader(os.Stdin, 32769))
+	body, err := io.ReadAll(io.LimitReader(os.Stdin, 4194305))
+	if err != nil || len(body) > 4194304 {
+		fmt.Fprintln(os.Stderr, "Invalid execution request size")
+		os.Exit(2)
+	}
+	d := json.NewDecoder(bytes.NewReader(body))
 	d.DisallowUnknownFields()
 	if err := d.Decode(&in); err != nil {
 		fmt.Fprintln(os.Stderr, "Invalid execution request")
