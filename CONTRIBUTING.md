@@ -26,4 +26,12 @@ snyk auth
 snyk test --all-projects --dev --org=memrov --remote-repo-url=https://github.com/Memrov/PentCloud-tools
 ```
 
+The custom Python requirements filename needs an explicit scan. In the coverage
+virtual environment described in [testing](docs/testing.md), run:
+
+```sh
+.cache/coverage-venv/bin/python -m pip install -r requirements-coverage.txt
+snyk test --file=requirements-coverage.txt --package-manager=pip --command="$PWD/.cache/coverage-venv/bin/python" --org=memrov --remote-repo-url=https://github.com/Memrov/PentCloud-tools
+```
+
 The public repository URL helps Snyk classify the scan correctly. Review scan errors and the manifests actually tested, including Go and Python alongside npm. Source dependency scanning does not inventory or scan bundled executables, datasets or base-image packages. Check the account's actual plan and usage before enabling additional products; open-source program benefits require eligibility. Keep CLI credentials outside Git. The existing GitHub app handles imported projects without a Snyk credential in Actions; inspect those projects before creating additional `snyk monitor` snapshots.
