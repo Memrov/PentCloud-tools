@@ -43,6 +43,6 @@ The generated reports contain counts and source-relative paths. Python is config
 - Verify exact published package/image integrity and a clean consumer installation.
 - Confirm the existing application integration and fallback behavior before changing production routing.
 
-Existing release tags and npm versions remain immutable. A coverage or documentation change does not silently replace a released runtime image.
+Do not replace existing package versions or release assets. Earlier GitHub releases were published without release immutability; see [release verification](releases.md#verification-and-dependency-inventory). A coverage or documentation change does not silently replace a released runtime image.
 
 References: [Node coverage](https://nodejs.org/api/test.html#collecting-code-coverage), [Go coverage](https://go.dev/doc/build-cover), [coverage.py](https://coverage.readthedocs.io/), [Codecov setup](https://docs.codecov.com/docs/quick-start), [supported report formats](https://docs.codecov.com/docs/supported-report-formats).

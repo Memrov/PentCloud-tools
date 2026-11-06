@@ -17,7 +17,7 @@ The 0.1.0 SDK release exposes bounded, Cloudflare-tested profiles. SDK tarballs 
 | [@memrov2/pentcloud-web-context](https://www.npmjs.com/package/@memrov2/pentcloud-web-context) | 0.1.0 | WhatWeb and WaybackURLs adapter profiles |
 | [@memrov2/pentcloud-metasploit](https://www.npmjs.com/package/@memrov2/pentcloud-metasploit) | 0.1.0 | Private-binding proxy for the official Metasploit MCP server |
 
-The original recon release and `v0.1.0` tag remain immutable. `tools-v0.1.0` identifies the first additional SDK release. The repository release `tools-v0.1.1` adds the service, web-context and Metasploit SDKs at their initial npm version 0.1.0; existing package versions and prior release assets are unchanged. Each subsequent pack update must increment its own SDK/lock version and produce a matching verified image digest.
+The original recon release uses the `v0.1.0` tag. `tools-v0.1.0` identifies the first additional SDK release. The repository release `tools-v0.1.1` adds the service, web-context and Metasploit SDKs at their initial npm version 0.1.0; existing package versions and prior release assets are unchanged. These existing GitHub releases were published without GitHub release immutability. GitHub release immutability is now enabled for future releases; it does not lock earlier tags or assets. Each subsequent pack update must increment its own SDK/lock version and produce a matching verified image digest.
 
 ## SDK and image distribution
 
@@ -50,3 +50,11 @@ Native process deadlines now use cancellable timers cleared when `exitCode` sett
 The SQLmap adapter and shared runtime use the named `standard-1` preset for SQLmap, retaining its 75-second process limit and fixed request rate. `lite` completed the positive fixture but timed out on the parameterized negative fixture. Other adapters retain their `0.1.1-dev.1` release and named presets. This sizing adjustment does not change the tool payload, image manifest or stable versions.
 
 The SQLmap adapter `0.1.1-dev.3` corrects its public `ready().instance` declaration to `standard-1` and depends on shared runtime `0.1.1-dev.2`. It has the same executable profile as the preceding adapter candidate.
+
+## Verification and dependency inventory
+
+Download the assets for the exact [release tag](https://github.com/Memrov/PentCloud-tools/releases) you selected, including `SHA256SUMS`, and verify them locally with `sha256sum -c SHA256SUMS` (or `shasum -a 256 -c SHA256SUMS` on macOS). Check the package version, `tools.lock.json` and matching image digest before use. Checksums detect a mismatch with the published checksum file; they do not prove how an artifact was built.
+
+The published 0.1.0 npm packages have npm registry signatures and integrity metadata, but no `dist.attestations` build provenance. The existing GitHub releases also lack GitHub build attestations and immutable-release attestations. Registry signatures are distinct from build provenance. A future release can add verified build provenance and exact-artifact SBOMs through a deliberate release-process change; the current synthetic CI does not publish packages or images.
+
+GitHub can export a source dependency SBOM from the repository's [dependency graph](https://github.com/Memrov/PentCloud-tools/network/dependencies). It recognizes the npm, Go and Python manifests; it does not inventory the upstream scanner executables, datasets and full base-image contents pinned by `tools.lock.json` and `packages/*/tools.lock.json`. Review these pins and upstream advisories separately. An inventory of the exact built image and its transitive components remains a release-verification follow-up.
