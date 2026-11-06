@@ -107,3 +107,7 @@ See [tool packs and agent capabilities](docs/tool-packs.md) for the current Kali
 Run `npm run coverage` after the development setup in [testing and coverage](docs/testing.md). Reports use standard Node LCOV, Go coverprofile and Python Cobertura formats. The public Quality workflow runs these synthetic tests and uploads explicit coverage reports to Codecov. Cloud account, npm publishing and target credentials are not available to the workflow.
 
 The [release table](docs/releases.md) lists the npm SDKs and their image-distribution requirements. [HTTP, Nuclei and SQLmap](docs/bundles.md) and [the other tool families](docs/remaining-bundles.md) each have their own pinned image and bounded interface. Browser automation stays with managed Browser Run. These profiles do not replace every Kali operation.
+
+## Named instance presets (development)
+
+The next SDK version uses Cloudflare's named Container presets. Most bounded packs start on `lite`; recon and password use `standard-1`; Metasploit uses `standard-2`. `ready()` verifies and prepares a runtime without executing a scanner. Actual tool execution still waits for readiness and verifies the image manifest. SDK-only lifecycle/sizing updates can retain the same tool lock and image when their executable payload and image manifest are unchanged. Released SDK versions remain immutable.

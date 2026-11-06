@@ -109,3 +109,21 @@ test("a changed framework image leaves the running instance intact until explici
   assert(state.running);
   await runner.stop();
 });
+
+test("framework readiness uses a named preset and never returns internal credentials", async () => {
+  const {runner,state}=fixture();
+  const ready=await runner.ready();
+  assert.equal(ready.image,"msf-image");
+  assert.equal(state.options.instance,"standard-2");
+  assert(!JSON.stringify(ready).includes(state.storage.get("mcp-token")));
+  await runner.stop();
+  assert(!state.running);
+});
+
+test("framework retirement prevents a late MCP request from launching a new server", async () => {
+  const {runner,state}=fixture();
+  await runner.ready();await runner.retire();
+  await assert.rejects(runner.fetch(new Request("https://internal/mcp")),/retired/);
+  assert(!state.running);
+  assert(!state.storage.has("mcp-token"));
+});

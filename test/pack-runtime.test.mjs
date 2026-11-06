@@ -14,6 +14,7 @@ const hooks = registerHooks({
   },
 });
 const { HttpRunner } = await import("../packages/http/src/worker.mjs");
+const { ReferenceRunner } = await import("../packages/reference/src/worker.mjs");
 hooks.deregister();
 const hash = Buffer.from(
   await crypto.subtle.digest(
@@ -27,6 +28,7 @@ function fixture() {
   const started = new Promise((resolve) => {
     entered = resolve;
   });
+  const records = new Map();
   const state = {
     running: false,
     manifest: { lockSha256: hash },
@@ -47,7 +49,8 @@ function fixture() {
     get running() {
       return state.running;
     },
-    start() {
+    start(options) {
+      state.startOptions = options;
       state.running = true;
     },
     setInactivityTimeout: async () => {},
@@ -75,7 +78,7 @@ function fixture() {
       },
     }),
   };
-  return { state, started, runner: new HttpRunner({ container: c }, {}) };
+  return { state, started, runner: new HttpRunner({ container: c, storage: {get: async k => records.get(k), put: async (k,v) => records.set(k,v)} }, {}) };
 }
 test("a pack rejects a mismatched asset lock before executing tools", async () => {
   const { runner, state } = fixture();
@@ -148,4 +151,29 @@ test("a changed image never replaces a running assessment implicitly", async () 
   );
   assert(state.running);
   await runner.stop();
+});
+
+test("readiness starts a named Cloudflare preset without executing a scanner", async () => {
+  const {runner,state}=fixture();
+  const ready=await runner.ready();
+  assert.equal(ready.image,"pinned-http");
+  assert.equal(state.startOptions.instance,"lite");
+  assert.equal(state.commands.length,0);
+  assert(state.running);
+  await runner.stop();
+  assert(!state.running);
+});
+
+test("retiring an owned runtime fences delayed calls instead of restarting it", async () => {
+  const {runner,state}=fixture();
+  await runner.ready();
+  assert.deepEqual(await runner.retire(),{stopped:true,retired:true});
+  await assert.rejects(runner.run({tool:"curl",target:"https://example.com/"}),/retired/);
+  assert(!state.running);
+  assert.equal(state.commands.length,0);
+});
+
+test("retired reference runtimes cannot fetch source",async()=>{
+ const runner=new ReferenceRunner({storage:{get:async()=>true}},{});
+ await assert.rejects(runner.readSource("exploits/multiple/webapps/50383.sh"),/retired/);
 });

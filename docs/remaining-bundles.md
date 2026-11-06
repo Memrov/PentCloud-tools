@@ -100,3 +100,7 @@ Temporary runtimes, Workers and Workflows were removed, deployment leases revoke
 - [WhatWeb](https://github.com/urbanadventurer/WhatWeb), [WaybackURLs](https://github.com/tomnomnom/waybackurls)
 - [TShark manual](https://www.wireshark.org/docs/man-pages/tshark.html), [Binwalk](https://github.com/ReFirmLabs/binwalk), [Hashcat](https://hashcat.net/hashcat/)
 - [ExploitDB](https://gitlab.com/exploit-database/exploitdb), [official Metasploit MCP server](https://github.com/rapid7/metasploit-framework/blob/master/docs/metasploit-framework.wiki/How-to-use-Metasploit-MCP-Server.md)
+
+### Development preset validation
+
+The `0.1.1-dev.0` candidate uses named presets instead of the historical custom allocations above. Bounded packs use `lite`; recon and password use `standard-1`; Metasploit uses `standard-2`. Treat older allocation and timing measurements as historical fixture results. Validate memory, startup, duration and cleanup on the selected preset before application cutover. The image/tool locks remain pinned independently from this adapter-only update.

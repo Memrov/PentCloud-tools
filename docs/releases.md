@@ -32,3 +32,11 @@ The adapter’s MIT license does not change upstream executable, template, datas
 Run the local quality suite and the exact-image native Cloudflare checks before changing a runtime profile. Inspect `npm pack --dry-run`, scan source/history/tarballs for credentials and verify a clean consumer installation. Publish the shared runtime before dependent adapters. Keep npm credentials in local authentication; they are not stored in GitHub Actions.
 
 The Quality workflow runs synthetic tests, race checks, public types and unit coverage. It never launches an assessment or receives Cloudflare/target credentials. Codecov receives only the three explicit unit report files. Production routing and agent permissions change only in a separate application integration release.
+
+## Development SDK: 0.1.1-dev.0
+
+This adapter prerelease replaces custom Container sizing with Cloudflare named presets, adds scan-free `ready()` and persistent `retire()` methods, and shares reference-path validation with consumers. Executable pins and image manifests remain unchanged. `stop()` remains restartable; `retire()` permanently fences the owned identity, including calls after object reconstruction.
+
+Native Cloudflare fixture checks covered all eleven packs. Recon needs `standard-1`: httpx was killed on `lite` and completed on the larger preset. Password uses `standard-1`; Metasploit uses `standard-2`, with a longer startup idle window that reduces after readiness. Other bounded packs passed on `lite`. The checks exercised positive and negative controls, malformed packet input, offline attachments, pinned reference retrieval and the official Metasploit MCP list/search/session interfaces. These are profile-level functional checks, not full Kali parity or production assessment guarantees.
+
+Install the exact prerelease version for development. The stable `latest` dist-tags remain at 0.1.0. Lifecycle-only SDK releases may retain existing tool/image locks when the executable payload and release manifest are byte-identical; executable or pin changes still require new locks and verified images.

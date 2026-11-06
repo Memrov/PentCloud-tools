@@ -28,6 +28,7 @@ export class ReconRunner extends DurableObject {
     return result;
   }
   async #ready() {
+      if (await this.ctx.storage.get("retired")) throw new Error("Owned tool runtime is retired");
     const container = this.ctx.container,
       image = container.images.recon,
       start = Date.now();
@@ -41,7 +42,7 @@ export class ReconRunner extends DurableObject {
     } else
       container.start({
         image,
-        instance: { vcpu: 1, memoryMib: 512, diskMb: 2000 },
+        instance: "standard-1",
         enableInternet: true,
         labels: { pack: "recon", version: packVersion },
       });
@@ -90,7 +91,10 @@ export class ReconRunner extends DurableObject {
     const info = await container.inspect();
     if (info?.image !== image)
       throw new Error("Unable to verify recon image identity");
-    return { image, readyMs: Date.now() - start };
+    return { image, instance: "standard-1", readyMs: Date.now() - start };
+  }
+  ready() {
+    return this.#serialize(() => this.#ready());
   }
   run(input) {
     const command = buildCommand(input);
@@ -127,6 +131,13 @@ export class ReconRunner extends DurableObject {
         startedAt,
         finishedAt: new Date().toISOString(),
       };
+    });
+  }
+  retire() {
+    return this.#serialize(async () => {
+      await this.ctx.storage.put("retired", true);
+      if (this.ctx.container.running) await this.ctx.container.destroy();
+      return { stopped: !this.ctx.container.running, retired: true };
     });
   }
   stop() {

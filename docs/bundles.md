@@ -84,3 +84,7 @@ The public fixture returned HTTP 403 to SQLmap. Its positive/safe detection case
 The native smoke also verified serialization, image-manifest rejection, bounded process timeout, the exact two-MiB output cutoff, explicit shutdown, and 1,049,098 bytes of evidence through a streamed Workflow step. Temporary resources were removed after validation. Complete application integration and authenticated target/file-transfer support remain prerequisites to replacing a Kali path.
 
 References: [native Container API](https://developers.cloudflare.com/containers/api/durable-object-container/), [FFUF](https://github.com/ffuf/ffuf), [Nuclei modes](https://docs.projectdiscovery.io/opensource/nuclei/running), [SQLmap usage](https://github.com/sqlmapproject/sqlmap/wiki/Usage).
+
+### Development preset validation
+
+The `0.1.1-dev.0` candidate uses named presets instead of the historical custom allocations above. Bounded packs use `lite`; recon and password use `standard-1`; Metasploit uses `standard-2`. Treat older allocation and timing measurements as historical fixture results. Validate memory, startup, duration and cleanup on the selected preset before application cutover. The image/tool locks remain pinned independently from this adapter-only update.
