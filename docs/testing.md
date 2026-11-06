@@ -4,7 +4,7 @@ Tool packs have two different validation needs: adapter/lifecycle correctness an
 
 ## Run locally
 
-Use Node.js 26+ for development coverage, the existing Go 1.26.5 toolchain and Python 3.9+. SDK consumers still support Node.js 22+.
+Use Node.js 26+ for development coverage, the existing Go 1.26.5 toolchain and Python 3.11+ (CI uses 3.13). SDK consumers still support Node.js 22+; image-preparation scripts still support Python 3.9+.
 
 ```sh
 npm ci

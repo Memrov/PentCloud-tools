@@ -12,3 +12,5 @@ export declare function fetchReference(
   sha256: string;
   bytes: Uint8Array;
 }>;
+
+export declare function referencePath(path: string): string;

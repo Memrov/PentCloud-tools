@@ -33,6 +33,24 @@ Run the local quality suite and the exact-image native Cloudflare checks before 
 
 The Quality workflow runs synthetic tests, race checks, public types and unit coverage. It never launches an assessment or receives Cloudflare/target credentials. Codecov receives only the three explicit unit report files. Production routing and agent permissions change only in a separate application integration release.
 
+## Development SDK: 0.1.1-dev.0
+
+This adapter prerelease replaces custom Container sizing with Cloudflare named presets, adds scan-free `ready()` and persistent `retire()` methods, and shares reference-path validation with consumers. Executable pins and image manifests remain unchanged. `stop()` remains restartable; `retire()` permanently fences the owned identity, including calls after object reconstruction.
+
+Native Cloudflare fixture checks covered all eleven packs. Recon needs `standard-1`: httpx was killed on `lite` and completed on the larger preset. Password uses `standard-1`; Metasploit uses `standard-2`, with a longer startup idle window that reduces after readiness. Other bounded packs passed on `lite`. The checks exercised positive and negative controls, malformed packet input, offline attachments, pinned reference retrieval and the official Metasploit MCP list/search/session interfaces. These are profile-level functional checks, not full Kali parity or production assessment guarantees.
+
+Install the exact prerelease version for development. The stable `latest` dist-tags remain at 0.1.0. Lifecycle-only SDK releases may retain existing tool/image locks when the executable payload and release manifest are byte-identical; executable or pin changes still require new locks and verified images.
+
+## Development SDK: 0.1.1-dev.1
+
+Native process deadlines now use cancellable timers cleared when `exitCode` settles, including while buffered output drains. This follows Cloudflare's [process lifetime guidance](https://developers.cloudflare.com/containers/api/durable-object-container/#process-lifetime): a late abort after process exit can raise an internal Durable Object error. The shared runner, recon and Metasploit manifest check use the same helper. Tool arguments, execution limits, image locks and stable releases are unchanged.
+
+## SQLmap development SDK: 0.1.1-dev.2
+
+The SQLmap adapter and shared runtime use the named `standard-1` preset for SQLmap, retaining its 75-second process limit and fixed request rate. `lite` completed the positive fixture but timed out on the parameterized negative fixture. Other adapters retain their `0.1.1-dev.1` release and named presets. This sizing adjustment does not change the tool payload, image manifest or stable versions.
+
+The SQLmap adapter `0.1.1-dev.3` corrects its public `ready().instance` declaration to `standard-1` and depends on shared runtime `0.1.1-dev.2`. It has the same executable profile as the preceding adapter candidate.
+
 ## Verification and dependency inventory
 
 Download the assets for the exact [release tag](https://github.com/Memrov/PentCloud-tools/releases) you selected, including `SHA256SUMS`, and verify them locally with `sha256sum -c SHA256SUMS` (or `shasum -a 256 -c SHA256SUMS` on macOS). Check the package version, `tools.lock.json` and matching image digest before use. Checksums detect a mismatch with the published checksum file; they do not prove how an artifact was built.
