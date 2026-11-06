@@ -1,6 +1,10 @@
 # PentCloud service
 
-Nmap, Naabu and Masscan in a separate native Cloudflare runtime. **Unreleased candidate.** Private candidate: Nmap redistribution terms require review before publication.
+Nmap, Naabu and Masscan in a separate native Cloudflare runtime. **Version 0.1.0 SDK.** The npm package contains adapter code only. Nmap image redistribution terms still apply.
+
+```sh
+npm install @memrov2/pentcloud-service@0.1.0
+```
 
 ```js
 export { ServiceRunner } from '@memrov2/pentcloud-service/worker';

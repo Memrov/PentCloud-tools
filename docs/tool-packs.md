@@ -2,7 +2,7 @@
 
 PentCloud tools groups compatible tools into small runtimes according to their dependencies, execution lifetime and evidence needs. A pack can serve several agent roles; it is not a separate container image for each agent.
 
-The [0.1.0 release](releases.md) publishes recon and seven additional tool SDKs plus the shared runtime. Service, web-context and Metasploit remain source-only candidates with publication holds. Browser actions remain on the existing managed Browser Run path. Released profiles are bounded and do not promise full stock-interface compatibility. PentCloud keeps its existing Kali integration until application cutover tests pass.
+The [release table](releases.md) lists recon, ten additional tool SDKs and the shared runtime, all at 0.1.0. SDK publication covers the adapter code and metadata; upstream binary/image redistribution terms remain separate. Browser actions remain on the existing managed Browser Run path. Released profiles are bounded and do not promise full stock-interface compatibility. PentCloud keeps its existing Kali integration until application cutover tests pass.
 
 ## Start with what agents actually need
 

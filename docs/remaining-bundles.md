@@ -12,7 +12,7 @@ Seven additional tool families extend the [HTTP, Nuclei and SQLmap bundles](bund
 | `reference` | Original Searchsploit and ExploitDB indexes at the revision in `tools.lock.json` | Read-only keyword search; fetch an individual source file from the same pinned revision | Full exploit tree is fetched on demand, not bundled or executed. No automatic database update. |
 | `metasploit` | Official vendor image pinned by digest | Official HTTP MCP server through a private binding | No exposed callback/listener address, PostgreSQL database or certified parity for every framework module. |
 
-The SDK prefix is `@memrov2/pentcloud-`. PCAP, file-analysis, password and reference SDKs are in the [0.1.0 release](releases.md). Service, web-context and Metasploit have `private: true` in their manifests: Nmap has separate redistribution terms, WaybackURLs supplies no detected license grant, and the Metasploit vendor image includes Nmap. These publication blocks require resolution; an MIT adapter license does not license every included dependency.
+The SDK prefix is `@memrov2/pentcloud-`. All seven adapter SDKs are in the [release table](releases.md) at 0.1.0. Their npm tarballs contain original adapter source, types, pins and notices, without the third-party executables or images. Nmap has separate redistribution terms, WaybackURLs supplies no detected license grant, and the Metasploit vendor image includes separately licensed components. These image-distribution cautions remain in effect; the MIT adapter license grants no rights to third-party tool contents.
 
 ## Use existing run identities and evidence storage
 

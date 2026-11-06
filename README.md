@@ -106,4 +106,4 @@ See [tool packs and agent capabilities](docs/tool-packs.md) for the current Kali
 
 Run `npm run coverage` after the development setup in [testing and coverage](docs/testing.md). Reports use standard Node LCOV, Go coverprofile and Python Cobertura formats. The public Quality workflow runs these synthetic tests and uploads explicit coverage reports to Codecov. Cloud account, npm publishing and target credentials are not available to the workflow.
 
-The [release table](docs/releases.md) lists the npm SDKs and the three source-only candidates. [HTTP, Nuclei and SQLmap](docs/bundles.md) and [the other tool families](docs/remaining-bundles.md) each have their own pinned image and bounded interface. Browser automation stays with managed Browser Run. These profiles do not replace every Kali operation.
+The [release table](docs/releases.md) lists the npm SDKs and their image-distribution requirements. [HTTP, Nuclei and SQLmap](docs/bundles.md) and [the other tool families](docs/remaining-bundles.md) each have their own pinned image and bounded interface. Browser automation stays with managed Browser Run. These profiles do not replace every Kali operation.

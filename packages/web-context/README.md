@@ -1,6 +1,10 @@
 # PentCloud web-context
 
-WhatWeb and WaybackURLs in a separate native Cloudflare runtime. **Unreleased candidate.** Private candidate: WaybackURLs has no detected license grant; legacy provider availability is not certified.
+WhatWeb and WaybackURLs in a separate native Cloudflare runtime. **Version 0.1.0 SDK.** The npm package contains adapter code only. WaybackURLs has no detected redistribution license grant; live legacy-provider availability is not certified.
+
+```sh
+npm install @memrov2/pentcloud-web-context@0.1.0
+```
 
 ```js
 export { WebContextRunner } from '@memrov2/pentcloud-web-context/worker';
