@@ -69,6 +69,9 @@ async function streamedStep(step: WorkflowStep, runner: HttpRunner) {
   });
 }
 void streamedStep;
+import {execOutput} from "@memrov2/pentcloud-tool-runtime/exec";
+async function nativeCommand(ctx:DurableObjectState):Promise<number>{return (await execOutput(ctx.container!,["/bin/true"],{timeoutMs:1000})).exitCode;}
+void nativeCommand;
 
 import type { ServiceRunner } from "@memrov2/pentcloud-service/worker";
 import type { WebContextRunner } from "@memrov2/pentcloud-web-context/worker";
@@ -114,3 +117,11 @@ async function remaining(
   return bytes;
 }
 void remaining;
+
+async function readyEveryPack(recon: ReconRunner, http: HttpRunner, nuclei: NucleiRunner, sql: SqlmapRunner, service: ServiceRunner, web: WebContextRunner, pcap: PcapRunner, file: FileRunner, password: PasswordRunner, reference: ReferenceRunner, msf: MetasploitRunner) {
+  const light: "lite"[] = await Promise.all([http, nuclei, service, web, pcap, file, reference].map(async runner => (await runner.ready()).instance));
+  const heavy: ("standard-1"|"standard-2")[] = [(await recon.ready()).instance, (await sql.ready()).instance, (await password.ready()).instance, (await msf.ready()).instance];
+  await Promise.all([recon, http, nuclei, sql, service, web, pcap, file, password, reference, msf].map(runner => runner.retire()));
+  return {light, heavy};
+}
+void readyEveryPack;

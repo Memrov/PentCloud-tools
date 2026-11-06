@@ -111,6 +111,10 @@ Run `npm run coverage` after the development setup in [testing and coverage](doc
 
 The [release table](docs/releases.md) lists the npm SDKs and their image-distribution requirements. [HTTP, Nuclei and SQLmap](docs/bundles.md) and [the other tool families](docs/remaining-bundles.md) each have their own pinned image and bounded interface. Browser automation stays with managed Browser Run. These profiles do not replace every Kali operation.
 
+## Named instance presets (development)
+
+The next SDK version uses Cloudflare's named Container presets. Most bounded packs start on `lite`; recon, SQLmap and password use `standard-1`; Metasploit uses `standard-2`. `ready()` verifies and prepares a runtime without executing a scanner. Actual tool execution still waits for readiness and verifies the image manifest. SDK-only lifecycle/sizing updates can retain the same tool lock and image when their executable payload and image manifest are unchanged. Released SDK versions remain immutable.
+
 ## Ecosystem trust and verification
 
 [PentCloud](https://github.com/Memrov/PentCloud) owns application integration; [PentCloud-scopes](https://github.com/Memrov/PentCloud-scopes) supplies scope data. This repository supplies the adapters, execution helper and tool/image pins. Review each repository's checks and security policy for the component you use. [Contributing](CONTRIBUTING.md) explains validation, and [SECURITY.md](SECURITY.md) links to private reporting.

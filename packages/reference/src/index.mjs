@@ -1,6 +1,6 @@
 import lock from "../tools.lock.json" with { type: "json" };
 export { lock };
-export async function fetchReference(path, fetcher = fetch) {
+export function referencePath(path) {
   if (typeof path === "string" && path.startsWith("/opt/exploitdb/"))
     path = path.slice("/opt/exploitdb/".length);
   if (
@@ -10,6 +10,10 @@ export async function fetchReference(path, fetcher = fetch) {
     path.split("/").some((p) => !p || p === "." || p === "..")
   )
     throw new TypeError("Select a pinned exploit reference path");
+  return path;
+}
+export async function fetchReference(path, fetcher = fetch) {
+  path = referencePath(path);
   const url =
     "https://gitlab.com/exploit-database/exploitdb/-/raw/" +
     lock.dataRevision +

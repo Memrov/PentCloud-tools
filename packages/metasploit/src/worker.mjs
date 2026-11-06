@@ -1,4 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
+import { execOutput } from "@memrov2/pentcloud-tool-runtime/exec";
 import { lock } from "./index.mjs";
 const decode = (x) => new TextDecoder().decode(x);
 const digest = async () =>
@@ -21,6 +22,7 @@ export class MetasploitRunner extends DurableObject {
     return result;
   }
   async #ready() {
+      if (await this.ctx.storage.get("retired")) throw new Error("Owned tool runtime is retired");
     const c = this.ctx.container,
       image = c.images.metasploit;
     if (!image) throw new Error("Configure the metasploit named image");
@@ -58,21 +60,20 @@ export class MetasploitRunner extends DurableObject {
           MSF_MCP_MIN_THREADS: "1",
           MSF_MCP_MAX_THREADS: "4",
         },
-        instance: { vcpu: 2, memoryMib: 2048, diskMb: 8000 },
+        instance: "standard-2",
         enableInternet: true,
         labels: { pack: "metasploit", version: lock.packVersion },
       });
-    await c.setInactivityTimeout(120000);
+    await c.setInactivityTimeout(240000);
     const deadline = Date.now() + 180000;
     let verified = false;
     while (Date.now() < deadline) {
       try {
         if (!verified) {
-          const p = await c.exec(
+          const r = await execOutput(c,
             ["/bin/cat", "/opt/pentcloud-metasploit/pack.json"],
-            { signal: AbortSignal.timeout(5000) },
+            { timeoutMs: 5000 },
           );
-          const r = await p.output();
           if (
             r.exitCode !== 0 ||
             JSON.parse(decode(r.stdout)).lockSha256 !== (await digest())
@@ -90,7 +91,7 @@ export class MetasploitRunner extends DurableObject {
             signal: AbortSignal.timeout(5000),
           });
         await r.body?.cancel();
-        if ([200, 400, 405, 406].includes(r.status)) return token;
+        if ([200, 400, 405, 406].includes(r.status)) {await c.setInactivityTimeout(120000);return token;}
         if (r.status === 401)
           throw new Error("Internal MCP authentication failed");
       } catch (error) {
@@ -101,6 +102,12 @@ export class MetasploitRunner extends DurableObject {
     throw new Error(
       "Official Metasploit MCP server did not become ready within 180 seconds",
     );
+  }
+  ready() {
+    return this.#serial(async () => {
+      await this.#ready();
+      return { image: this.ctx.container.images.metasploit, instance: "standard-2" };
+    });
   }
   async fetch(request) {
     const url = new URL(request.url);
@@ -125,6 +132,14 @@ export class MetasploitRunner extends DurableObject {
           duplex: "half",
         }),
       );
+  }
+  retire() {
+    return this.#serial(async () => {
+      await this.ctx.storage.put("retired", true);
+      if (this.ctx.container.running) await this.ctx.container.destroy();
+      await this.ctx.storage.delete("mcp-token");
+      return { stopped: !this.ctx.container.running, retired: true };
+    });
   }
   stop() {
     return this.#serial(async () => {

@@ -42,7 +42,7 @@ test("a hung native readiness command cannot reset the overall startup deadline"
         }),
       ),
   };
-  const runner = new ReconRunner({ container }, {});
+  const runner = new ReconRunner({ container, storage: {get:async()=>undefined} }, {});
   let settled = false;
   const pending = runner.run({ tool: "dnsx", target: "example.com" }).then(
     () => {
@@ -70,6 +70,7 @@ const release = JSON.parse(
 );
 const encoded = (value) => new TextEncoder().encode(value).buffer;
 function nativeFixture() {
+  const records = new Map();
   const state = {
     running: false,
     image: "recon-image",
@@ -94,7 +95,9 @@ function nativeFixture() {
     get running() {
       return state.running;
     },
-    start({ image }) {
+    start(options) {
+      const {image}=options;
+      state.startOptions = options;
       state.running = true;
       state.image = image;
     },
@@ -104,6 +107,7 @@ function nativeFixture() {
       state.running = false;
     },
     exec: async (argv, options) => ({
+      exitCode: Promise.resolve(0),
       output: async () => {
         if (argv[0] === "/bin/true")
           return { exitCode: 0, stdout: encoded(""), stderr: encoded("") };
@@ -124,7 +128,7 @@ function nativeFixture() {
       },
     }),
   };
-  return { state, container, runner: new ReconRunner({ container }, {}) };
+  return { state, container, runner: new ReconRunner({ container, storage: {get: async k => records.get(k),put: async (k,v) => records.set(k,v)} }, {}) };
 }
 
 test("structured tool failures remain visible and do not poison the next call", async () => {
@@ -259,4 +263,20 @@ test("a missing named image rejects the call before any runtime starts", async (
   );
   assert.equal(state.running, false);
   assert.deepEqual(await runner.stop(), { stopped: true });
+});
+
+test("recon readiness verifies its image without launching reconnaissance", async () => {
+  const {runner,state}=nativeFixture();
+  state.helper=async()=>{throw new Error("Readiness must not scan");};
+  assert.equal((await runner.ready()).image,"recon-image");
+  assert.equal(state.startOptions.instance,"standard-1");
+  await runner.stop();
+  assert(!state.running);
+});
+
+test("recon retirement permanently closes the owned identity", async () => {
+  const {runner,state}=nativeFixture();
+  await runner.ready();await runner.retire();
+  await assert.rejects(runner.ready(),/retired/);
+  assert(!state.running);
 });
