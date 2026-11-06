@@ -1,18 +1,18 @@
 import { DurableObject } from "cloudflare:workers";
 import { buildCommand, packVersion, tools } from "./index.mjs";
+import { execOutput } from "@memrov2/pentcloud-tool-runtime/exec";
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const decode = (data) => new TextDecoder().decode(data);
 async function exec(
   container,
   argv,
   body,
-  signal = AbortSignal.timeout(90000),
+  timeoutMs = 90000,
 ) {
-  const process = await container.exec(argv, {
-    signal,
+  const result = await execOutput(container, argv, {
+    timeoutMs,
     ...(body ? { stdin: new Blob([body]).stream() } : {}),
   });
-  const result = await process.output();
   return {
     exitCode: result.exitCode,
     stdout: decode(result.stdout),
@@ -47,19 +47,19 @@ export class ReconRunner extends DurableObject {
         labels: { pack: "recon", version: packVersion },
       });
     await container.setInactivityTimeout(120000);
-    const deadline = AbortSignal.timeout(90000);
+    const deadline = Date.now() + 90000;
     let ready = false;
-    while (Date.now() - start < 90000 && !deadline.aborted) {
+    while (Date.now() < deadline) {
       try {
         if (
-          (await exec(container, ["/bin/true"], undefined, deadline))
+          (await exec(container, ["/bin/true"], undefined, Math.max(1,deadline-Date.now())))
             .exitCode === 0
         ) {
           ready = true;
           break;
         }
       } catch {}
-      if (!deadline.aborted)
+      if (Date.now() < deadline)
         await wait(Math.min(1000, Math.max(0, 90000 - (Date.now() - start))));
     }
     if (!ready)
@@ -68,7 +68,7 @@ export class ReconRunner extends DurableObject {
       container,
       ["/bin/cat", "/opt/pentcloud-recon/pack.json"],
       undefined,
-      deadline,
+      Math.max(1,deadline-Date.now()),
     );
     if (marker.exitCode !== 0)
       throw new Error("Recon image is missing its release manifest");

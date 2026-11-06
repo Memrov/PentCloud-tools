@@ -50,6 +50,7 @@ function fixture() {
         state.running = false;
       },
       exec: async () => ({
+        exitCode: Promise.resolve(0),
         output: async () => ({
           exitCode: 0,
           stdout: new TextEncoder().encode(JSON.stringify({ lockSha256: hash }))

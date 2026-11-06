@@ -69,6 +69,9 @@ async function streamedStep(step: WorkflowStep, runner: HttpRunner) {
   });
 }
 void streamedStep;
+import {execOutput} from "@memrov2/pentcloud-tool-runtime/exec";
+async function nativeCommand(ctx:DurableObjectState):Promise<number>{return (await execOutput(ctx.container!,["/bin/true"],{timeoutMs:1000})).exitCode;}
+void nativeCommand;
 
 import type { ServiceRunner } from "@memrov2/pentcloud-service/worker";
 import type { WebContextRunner } from "@memrov2/pentcloud-web-context/worker";

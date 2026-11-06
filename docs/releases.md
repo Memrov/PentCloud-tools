@@ -40,3 +40,7 @@ This adapter prerelease replaces custom Container sizing with Cloudflare named p
 Native Cloudflare fixture checks covered all eleven packs. Recon needs `standard-1`: httpx was killed on `lite` and completed on the larger preset. Password uses `standard-1`; Metasploit uses `standard-2`, with a longer startup idle window that reduces after readiness. Other bounded packs passed on `lite`. The checks exercised positive and negative controls, malformed packet input, offline attachments, pinned reference retrieval and the official Metasploit MCP list/search/session interfaces. These are profile-level functional checks, not full Kali parity or production assessment guarantees.
 
 Install the exact prerelease version for development. The stable `latest` dist-tags remain at 0.1.0. Lifecycle-only SDK releases may retain existing tool/image locks when the executable payload and release manifest are byte-identical; executable or pin changes still require new locks and verified images.
+
+## Development SDK: 0.1.1-dev.1
+
+Native process deadlines now use cancellable timers cleared when `exitCode` settles, including while buffered output drains. This follows Cloudflare's [process lifetime guidance](https://developers.cloudflare.com/containers/api/durable-object-container/#process-lifetime): a late abort after process exit can raise an internal Durable Object error. The shared runner, recon and Metasploit manifest check use the same helper. Tool arguments, execution limits, image locks and stable releases are unchanged.

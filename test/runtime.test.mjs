@@ -107,6 +107,7 @@ function nativeFixture() {
       state.running = false;
     },
     exec: async (argv, options) => ({
+      exitCode: Promise.resolve(0),
       output: async () => {
         if (argv[0] === "/bin/true")
           return { exitCode: 0, stdout: encoded(""), stderr: encoded("") };

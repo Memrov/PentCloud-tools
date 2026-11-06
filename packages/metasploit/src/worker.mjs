@@ -1,4 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
+import { execOutput } from "@memrov2/pentcloud-tool-runtime/exec";
 import { lock } from "./index.mjs";
 const decode = (x) => new TextDecoder().decode(x);
 const digest = async () =>
@@ -69,11 +70,10 @@ export class MetasploitRunner extends DurableObject {
     while (Date.now() < deadline) {
       try {
         if (!verified) {
-          const p = await c.exec(
+          const r = await execOutput(c,
             ["/bin/cat", "/opt/pentcloud-metasploit/pack.json"],
-            { signal: AbortSignal.timeout(5000) },
+            { timeoutMs: 5000 },
           );
-          const r = await p.output();
           if (
             r.exitCode !== 0 ||
             JSON.parse(decode(r.stdout)).lockSha256 !== (await digest())

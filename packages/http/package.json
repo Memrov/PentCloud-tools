@@ -1,6 +1,6 @@
 {
   "name": "@memrov2/pentcloud-http",
-  "version": "0.1.1-dev.0",
+  "version": "0.1.1-dev.1",
   "type": "module",
   "license": "MIT",
   "description": "Cloudflare-native http tool pack",
@@ -33,6 +33,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@memrov2/pentcloud-tool-runtime": "0.1.1-dev.0"
+    "@memrov2/pentcloud-tool-runtime": "0.1.1-dev.1"
   }
 }

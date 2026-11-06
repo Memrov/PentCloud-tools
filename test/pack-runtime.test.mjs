@@ -34,6 +34,7 @@ function fixture() {
     manifest: { lockSha256: hash },
     image: "pinned-http",
     commands: [],
+    lateSignals: [],
     helper: async () => ({
       exitCode: 0,
       stdout: "real tool response",
@@ -58,7 +59,11 @@ function fixture() {
     destroy: async () => {
       state.running = false;
     },
-    exec: async (argv, options) => ({
+    exec: async (argv, options) => {
+      let exited=false;
+      options.signal?.addEventListener("abort",()=>{if(exited)state.lateSignals.push(argv[0]);});
+      let finish;const exitCode=new Promise(resolve=>{finish=resolve;});
+      return {exitCode,
       output: async () => {
         let value = { exitCode: 0, stdout: "", stderr: "" };
         if (argv[0] === "/bin/cat")
@@ -70,13 +75,14 @@ function fixture() {
           entered();
           value.stdout = JSON.stringify(await state.helper(cmd));
         }
+        exited=true;finish(value.exitCode);
         return {
           ...value,
           stdout: encoded(value.stdout),
           stderr: encoded(value.stderr),
         };
       },
-    }),
+    };},
   };
   return { state, started, runner: new HttpRunner({ container: c, storage: {get: async k => records.get(k), put: async (k,v) => records.set(k,v)} }, {}) };
 }
@@ -90,6 +96,14 @@ test("a pack rejects a mismatched asset lock before executing tools", async () =
   assert.equal(state.commands.length, 0);
   await runner.stop();
   assert(!state.running);
+});
+test("completed native exec processes cannot receive a later deadline signal", async t=>{
+  t.mock.timers.enable({apis:["Date","setTimeout"],now:0});
+  t.mock.method(AbortSignal,"timeout",ms=>{const c=new AbortController();setTimeout(()=>c.abort(),ms);return c.signal;});
+  const {runner,state}=fixture();
+  await runner.run({tool:"curl",target:"https://example.com/"});
+  t.mock.timers.tick(90001);await nextTurn();
+  assert.deepEqual(state.lateSignals,[],"a completed readiness/manifest/tool process must not be signaled after its PID can be reused");
 });
 test("pack results retain failure evidence and the queue recovers", async () => {
   const { runner, state } = fixture();

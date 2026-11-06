@@ -1,5 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 import { prepareFiles } from "./index.mjs";
+import { execOutput } from "./exec.mjs";
 const decode = (data) => new TextDecoder().decode(data);
 const hash = async (value) =>
   [
@@ -12,12 +13,11 @@ const hash = async (value) =>
   ]
     .map((x) => x.toString(16).padStart(2, "0"))
     .join("");
-async function exec(container, argv, body, signal) {
-  const process = await container.exec(argv, {
-    signal,
+async function exec(container, argv, body, timeoutMs) {
+  const result = await execOutput(container, argv, {
+    timeoutMs,
     ...(body ? { stdin: new Blob([body]).stream() } : {}),
   });
-  const result = await process.output();
   return {
     exitCode: result.exitCode,
     stdout: decode(result.stdout),
@@ -53,19 +53,19 @@ export function createRunner(lock, buildCommand) {
           labels: { pack: lock.packId, version: lock.packVersion },
         });
       await container.setInactivityTimeout(120000);
-      const signal = AbortSignal.timeout(90000);
+      const deadline = Date.now() + 90000;
       while (true) {
         try {
           if (
-            (await exec(container, ["/bin/true"], undefined, signal))
+            (await exec(container, ["/bin/true"], undefined, Math.max(1,deadline-Date.now())))
               .exitCode === 0
           )
             break;
         } catch (error) {
-          if (signal.aborted)
+          if (Date.now() >= deadline)
             throw new Error("Container readiness exceeded 90 seconds");
         }
-        if (signal.aborted || Date.now() - start >= 90000)
+        if (Date.now() >= deadline)
           throw new Error("Container readiness exceeded 90 seconds");
         await new Promise((resolve) =>
           setTimeout(resolve, Math.min(1000, 90000 - (Date.now() - start))),
@@ -75,7 +75,7 @@ export function createRunner(lock, buildCommand) {
         container,
         ["/bin/cat", root + "/pack.json"],
         undefined,
-        signal,
+        Math.max(1,deadline-Date.now()),
       );
       let release;
       try {
@@ -108,7 +108,7 @@ export function createRunner(lock, buildCommand) {
             ...command,
             ...(Object.keys(attachments).length ? { files: attachments } : {}),
           }),
-          AbortSignal.timeout(90000),
+          90000,
         );
         if (output.exitCode !== 0)
           throw new Error("Pack execution helper failed");
@@ -158,7 +158,7 @@ export function createRunner(lock, buildCommand) {
           this.ctx.container,
           [root + "/bin/pack-exec", "--capabilities"],
           undefined,
-          AbortSignal.timeout(10000),
+          10000,
         );
         if (result.exitCode !== 0) throw new Error("Capability probe failed");
         return { ...JSON.parse(result.stdout), ...ready };
