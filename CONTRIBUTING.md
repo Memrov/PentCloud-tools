@@ -19,12 +19,36 @@ Dependabot monitors the root npm workspaces, Python coverage dependency, Go modu
 
 ## Local Snyk dependency scan
 
-After installing the development dependencies and following the [Snyk CLI authentication instructions](https://docs.snyk.io/developer-tools/snyk-cli/authenticate-to-use-the-cli), members of the `memrov` Snyk organization can run:
+With npm, Go and the authenticated [Snyk CLI](https://docs.snyk.io/developer-tools/snyk-cli/authenticate-to-use-the-cli) on `PATH`, members of the `memrov` Snyk organization can run:
 
 ```sh
-snyk auth
-snyk test --all-projects --dev --org=memrov --remote-repo-url=https://github.com/Memrov/PentCloud-tools
+python3 scripts/scan-dependencies.py
 ```
+
+The helper runs `npm ci --ignore-scripts` against the authoritative lockfile and
+checks `npm ls`, explicitly including development, optional and peer dependencies
+even when the shell uses production or omit settings. It copies tracked source
+into a temporary scan view, preserves manifests and Go source, and links the
+clean installed dependencies. Only the
+view omits npm lockfiles, selecting Snyk's documented installed-tree scan mode.
+The source manifests, lockfile and Go module files must retain their original hashes.
+
+Snyk runs with `--all-projects --fail-fast --dev --strict-out-of-sync=true`.
+The helper requires every tracked npm manifest and the Go module to appear in
+the results, and compares the submitted npm package/version inventory with
+`npm ls` rather than trusting a green exit or dependency count. It saves a
+sanitized report in `.cache/snyk-installed-inventory.json`. Exit 0 means complete
+with no findings, 1 means complete with vulnerabilities, and 2 means a scan or
+coverage check failed. Raw CLI output and authentication data are not saved.
+
+This checks packages installed on the current OS/CPU, including development
+dependencies. Optional packages for other platforms need their own installation
+and scan. The installed resolver can report hoisted workspace packages as
+extraneous and omit the root's direct runtime edge when its declared version
+differs from the linked workspace version; inventory equality verifies package
+coverage, not exact dependency-path fidelity. Snyk's npm workspace lock parser
+currently fails this root layout, and npm workspace SCM scans remain unsupported;
+an existing SCM badge or zero-dependency project is not evidence of this check.
 
 The custom Python requirements filename needs an explicit scan. In the coverage
 virtual environment described in [testing](docs/testing.md), run:
