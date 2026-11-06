@@ -1,9 +1,12 @@
 # PentCloud tools
 
-[![Quality](https://github.com/Memrov/PentCloud-tools/actions/workflows/quality.yml/badge.svg)](https://github.com/Memrov/PentCloud-tools/actions/workflows/quality.yml)
+[![Quality](https://github.com/Memrov/PentCloud-tools/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/Memrov/PentCloud-tools/actions/workflows/quality.yml)
+[![CodeQL](https://github.com/Memrov/PentCloud-tools/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/Memrov/PentCloud-tools/actions/workflows/codeql.yml)
+[![Snyk monitored](https://snyk.io/test/github/Memrov/PentCloud-tools/badge.svg)](https://snyk.io/test/github/Memrov/PentCloud-tools)
 [![codecov](https://codecov.io/gh/Memrov/PentCloud-tools/branch/main/graph/badge.svg)](https://app.codecov.io/gh/Memrov/PentCloud-tools)
 [![npm](https://badgen.net/npm/v/@memrov2/pentcloud-recon)](https://www.npmjs.com/package/@memrov2/pentcloud-recon)
 [![Adapter license: MIT](https://badgen.net/static/adapter%20license/MIT/blue)](LICENSE)
+[![Security policy](https://badgen.net/static/security/policy/blue)](SECURITY.md)
 
 Small, versioned tool runtimes for Cloudflare. The first package, **`@memrov2/pentcloud-recon`**, runs the original httpx, dnsx, Katana and Subfinder binaries together in one lightweight Linux container.
 
@@ -78,7 +81,7 @@ Version `0.1.0` identifies the recon pack and its SDK contract. `tools.lock.json
 
 Pin the npm package and container image digest together. The runner checks the image's release manifest before executing commands and rejects a mismatched running image. Finish active runs before upgrading their SDK/image pair; retain prior images and matching adapters for retries and rollback. Publishing a package does not deploy it to customer accounts or replace a running container.
 
-To prepare a release: update the package/lock versions together, run the tests and Cloudflare smoke check, build the image, inspect `npm pack --dry-run`, and attach the verified npm tarball, image archive and SHA-256 checksums to the release. Authentication belongs in native CLI login or a secret store, never source files. GitHub Actions runs synthetic quality checks only; publishing uses the maintainer’s local npm authentication. No scanners or assessments run in Actions.
+To prepare a release: update the package/lock versions together, run the tests and Cloudflare smoke check, build the image, inspect `npm pack --dry-run`, and attach the verified npm tarball, image archive and SHA-256 checksums to the release. Authentication belongs in native CLI login or a secret store, never source files. GitHub Actions runs source analysis and synthetic quality checks; publishing uses the maintainer’s local npm authentication. No tool-pack scanners or assessments run in Actions.
 
 ## Limits and safety
 
@@ -107,3 +110,13 @@ See [tool packs and agent capabilities](docs/tool-packs.md) for the current Kali
 Run `npm run coverage` after the development setup in [testing and coverage](docs/testing.md). Reports use standard Node LCOV, Go coverprofile and Python Cobertura formats. The public Quality workflow runs these synthetic tests and uploads explicit coverage reports to Codecov. Cloud account, npm publishing and target credentials are not available to the workflow.
 
 The [release table](docs/releases.md) lists the npm SDKs and their image-distribution requirements. [HTTP, Nuclei and SQLmap](docs/bundles.md) and [the other tool families](docs/remaining-bundles.md) each have their own pinned image and bounded interface. Browser automation stays with managed Browser Run. These profiles do not replace every Kali operation.
+
+## Ecosystem trust and verification
+
+[PentCloud](https://github.com/Memrov/PentCloud) owns application integration; [PentCloud-scopes](https://github.com/Memrov/PentCloud-scopes) supplies scope data. This repository supplies the adapters, execution helper and tool/image pins. Review each repository's checks and security policy for the component you use. [Contributing](CONTRIBUTING.md) explains validation, and [SECURITY.md](SECURITY.md) links to private reporting.
+
+The badges link to live source checks, coverage, the recon npm version and the adapter license. CodeQL analyzes Actions, JavaScript/TypeScript, Go and Python; PR dependency review rejects newly introduced high or critical vulnerabilities in dependencies visible to GitHub. These checks do not establish safety of a target assessment.
+
+The existing Snyk GitHub integration in the `memrov` organization checks imported dependency projects. Its badge currently says **monitored**, rather than reporting a vulnerability count. Inspect the `security/snyk (memrov)` PR report: **No manifest changes detected** is a passing result, not a fresh scan of every dependency. Imported source manifests do not establish vulnerability coverage of the bundled scanner executables or operating-system image. See [contributing](CONTRIBUTING.md#local-snyk-dependency-scan) for a local dependency scan.
+
+GitHub's [dependency graph and SBOM export](https://github.com/Memrov/PentCloud-tools/network/dependencies) cover recognized source manifests. Scanner executables, datasets and base-image contents need their own inventories and review. Published 0.1.0 npm packages have registry signatures but no build-provenance attestations. See [release verification](docs/releases.md#verification-and-dependency-inventory) for the current evidence and its limits.

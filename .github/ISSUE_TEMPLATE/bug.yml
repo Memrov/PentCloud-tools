@@ -1,0 +1,29 @@
+name: Bug report
+description: Report a reproducible adapter, build or documentation problem.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report vulnerabilities privately at https://github.com/Memrov/PentCloud-tools/security/advisories/new.
+        Use synthetic examples. Remove credentials, target identities and private assessment evidence.
+  - type: input
+    id: version
+    attributes:
+      label: Package version and image digest
+      description: Include the affected package, version and image digest if relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: Give minimal steps and synthetic inputs, plus Node/Go/Python versions or build platform where relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior
+      description: Include sanitized errors or output needed to understand the difference.
+    validations:
+      required: true
