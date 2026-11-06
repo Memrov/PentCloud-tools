@@ -34,6 +34,5 @@
   },
   "dependencies": {
     "@memrov2/pentcloud-tool-runtime": "0.1.0"
-  },
-  "private": true
+  }
 }
