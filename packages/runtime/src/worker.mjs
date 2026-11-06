@@ -48,7 +48,7 @@ export function createRunner(lock, buildCommand) {
       } else
         container.start({
           image,
-          instance: lock.packId === "password" ? "standard-1" : "lite",
+          instance: ["password","sqlmap"].includes(lock.packId) ? "standard-1" : "lite",
           enableInternet: lock.runtime?.enableInternet ?? true,
           labels: { pack: lock.packId, version: lock.packVersion },
         });
@@ -87,7 +87,7 @@ export function createRunner(lock, buildCommand) {
         throw new Error("Pack image and SDK pins do not match");
       if ((await container.inspect())?.image !== image)
         throw new Error("Unable to verify pack image identity");
-      return { image, instance: lock.packId === "password" ? "standard-1" : "lite", readyMs: Date.now() - start };
+      return { image, instance: ["password","sqlmap"].includes(lock.packId) ? "standard-1" : "lite", readyMs: Date.now() - start };
     }
     ready() {
       return this.#serialize(() => this.#ready());

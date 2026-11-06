@@ -44,3 +44,7 @@ Install the exact prerelease version for development. The stable `latest` dist-t
 ## Development SDK: 0.1.1-dev.1
 
 Native process deadlines now use cancellable timers cleared when `exitCode` settles, including while buffered output drains. This follows Cloudflare's [process lifetime guidance](https://developers.cloudflare.com/containers/api/durable-object-container/#process-lifetime): a late abort after process exit can raise an internal Durable Object error. The shared runner, recon and Metasploit manifest check use the same helper. Tool arguments, execution limits, image locks and stable releases are unchanged.
+
+## SQLmap development SDK: 0.1.1-dev.2
+
+The SQLmap adapter and shared runtime use the named `standard-1` preset for SQLmap, retaining its 75-second process limit and fixed request rate. `lite` completed the positive fixture but timed out on the parameterized negative fixture. Other adapters retain their `0.1.1-dev.1` release and named presets. This sizing adjustment does not change the tool payload, image manifest or stable versions.
