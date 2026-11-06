@@ -35,3 +35,8 @@ snyk test --file=requirements-coverage.txt --package-manager=pip --command="$PWD
 ```
 
 The public repository URL helps Snyk classify the scan correctly. Review scan errors and the manifests actually tested, including Go and Python alongside npm. Source dependency scanning does not inventory or scan bundled executables, datasets or base-image packages. Check the account's actual plan and usage before enabling additional products; open-source program benefits require eligibility. Keep CLI credentials outside Git. The existing GitHub app handles imported projects without a Snyk credential in Actions; inspect those projects before creating additional `snyk monitor` snapshots.
+
+The existing SCM projects have daily testing configured. Organization settings
+include npm development dependencies and use Python 3.13 for pip scans, matching
+the Quality workflow. Confirm these settings when changing build tooling; an
+older zero-dependency snapshot does not establish coverage of development tools.
