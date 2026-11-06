@@ -1,5 +1,8 @@
 """Exercise the real guard/staging code; external scanners are offline fixtures."""
 import copy
+from contextlib import redirect_stdout
+import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -7,9 +10,13 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts/scan-dependencies.py"
+SPEC = importlib.util.spec_from_file_location("scan_dependencies", SCRIPT)
+SCAN = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(SCAN)
 
 
 class DependencyScanTest(unittest.TestCase):
@@ -105,14 +112,22 @@ sys.exit(data.get("scanExit", 0))
             path.write_text(fake)
             path.chmod(0o755)
 
-    def run_scan(self, *, trees=None, results=None, output=None, **options):
+    def run_scan(self, *, trees=None, results=None, output=None, cli=False, **options):
         fixture = self.base / "fixture.json"
         values = [*(self.trees if trees is None else trees), self.results if results is None else results]
         fixture.write_text(json.dumps({"repo": str(self.repo), "manifests": self.manifests, "inventory": self.inventory, "output": output if output is not None else "\n".join(json.dumps(value, indent=2) for value in values), **options}))
         env = {**os.environ, "PATH": str(self.bin) + os.pathsep + os.environ["PATH"], "SCAN_FIXTURE": str(fixture)}
         if options.get("ambientProduction"):
             env.update(NODE_ENV="production", NPM_CONFIG_OMIT="dev")
-        result = subprocess.run([sys.executable, "scripts/scan-dependencies.py"], cwd=self.repo, env=env, text=True, capture_output=True)
+        if cli:
+            result = subprocess.run([sys.executable, "scripts/scan-dependencies.py"], cwd=self.repo, env=env, text=True, capture_output=True)
+        else:
+            # Keep code.co_filename at the original source path for coverage;
+            # only the entry point's repository location and environment vary.
+            stdout = io.StringIO()
+            with patch.object(SCAN, "__file__", str(self.repo / "scripts/scan-dependencies.py")), patch.dict(os.environ, env, clear=True), redirect_stdout(stdout):
+                exit_code = SCAN.main()
+            result = subprocess.CompletedProcess(["scan_dependencies.main"], exit_code, stdout.getvalue(), "")
         report = self.repo / ".cache/snyk-installed-inventory.json"
         self.assertTrue(report.exists(), result.stdout + result.stderr)
         if fixture.with_suffix(".view").exists():
@@ -222,6 +237,20 @@ sys.exit(data.get("scanExit", 0))
         result, _ = self.run_scan(installExit=1)
         self.assertEqual(result.returncode, 2)
         self.assertFalse((self.base / "fixture.view").exists())
+
+    def test_cli_exit_codes_match_sanitized_report(self):
+        vulnerable = copy.deepcopy(self.results)
+        vulnerable[0].update(ok=False, vulnerabilities=[{"id": "fixture-issue", "severity": "high"}])
+        for results, scanner_exit, expected_exit, status in [
+            (self.results, 0, 0, "passed"),
+            (vulnerable, 1, 1, "vulnerabilities"),
+            (self.results[1:], 0, 2, "failed"),
+        ]:
+            with self.subTest(exit_code=expected_exit):
+                result, report = self.run_scan(results=results, scanExit=scanner_exit, cli=True)
+                self.assertEqual(result.returncode, expected_exit, result.stdout + result.stderr)
+                self.assertEqual(report["status"], status)
+                self.assertEqual(report["exitCode"], expected_exit)
 
 
 if __name__ == "__main__":
