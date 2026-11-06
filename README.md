@@ -2,8 +2,8 @@
 
 [![Quality](https://github.com/Memrov/PentCloud-tools/actions/workflows/quality.yml/badge.svg)](https://github.com/Memrov/PentCloud-tools/actions/workflows/quality.yml)
 [![codecov](https://codecov.io/gh/Memrov/PentCloud-tools/branch/main/graph/badge.svg)](https://app.codecov.io/gh/Memrov/PentCloud-tools)
-[![npm](https://img.shields.io/npm/v/@memrov2/pentcloud-recon)](https://www.npmjs.com/package/@memrov2/pentcloud-recon)
-[![Adapter license: MIT](https://img.shields.io/badge/adapter_license-MIT-blue.svg)](LICENSE)
+[![npm](https://badgen.net/npm/v/@memrov2/pentcloud-recon)](https://www.npmjs.com/package/@memrov2/pentcloud-recon)
+[![Adapter license: MIT](https://badgen.net/static/adapter%20license/MIT/blue)](LICENSE)
 
 Small, versioned tool runtimes for Cloudflare. The first package, **`@memrov2/pentcloud-recon`**, runs the original httpx, dnsx, Katana and Subfinder binaries together in one lightweight Linux container.
 
