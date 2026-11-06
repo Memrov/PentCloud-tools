@@ -1,7 +1,11 @@
 package main
 
 import (
+	"bytes"
+	"context"
+	"encoding/json"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -73,5 +77,78 @@ func TestParentExitKillsDescendants(t *testing.T) {
 	}
 	if r.ExitCode != 0 || r.Error != "" {
 		t.Fatalf("parent completion was delayed by inherited pipes: %+v", r)
+	}
+}
+
+func TestExecutionLimitsRejectBeforeStarting(t *testing.T) {
+	d := fixture(t, "printf 'started'\n")
+	if valid := execute(input(1000), d); valid.ExitCode != 0 || valid.Stdout != "started" {
+		t.Fatalf("fixture cannot run: %+v", valid)
+	}
+	tooManyArgs := append(input(1000).Argv, make([]string, 100)...)
+	for _, tc := range []struct {
+		in   Input
+		want string
+	}{
+		{Input{}, "Missing executable"},
+		{input(0), "Invalid execution limits"},
+		{input(90001), "Invalid execution limits"},
+		{Input{Argv: input(1000).Argv, TimeoutMs: 1000, Stdin: strings.Repeat("x", 16385)}, "Invalid execution limits"},
+		{Input{Argv: tooManyArgs, TimeoutMs: 1000}, "Invalid execution limits"},
+	} {
+		r := execute(tc.in, d)
+		if r.ExitCode != -1 || r.Error != tc.want || r.Stdout != "" {
+			t.Fatalf("invalid request was accepted: %+v", r)
+		}
+	}
+}
+func TestFirstJSONRecordCanSpanChunks(t *testing.T) {
+	c := &capture{start: time.Now().Add(-time.Millisecond), cancel: func() {}}
+	_, _ = c.Write([]byte("diagnostic\n{\"value\":"))
+	if c.first != 0 {
+		t.Fatal("partial JSON counted as a record")
+	}
+	_, _ = c.Write([]byte("1}\n"))
+	if c.first == 0 || c.data.String() != "diagnostic\n{\"value\":1}\n" {
+		t.Fatal("split JSON was dropped or rewritten")
+	}
+}
+func TestProtocolHelperProcess(t *testing.T) {
+	if os.Getenv("PENTCLOUD_PROTOCOL_HELPER") != "1" {
+		return
+	}
+	main()
+	os.Exit(0)
+}
+func protocol(t *testing.T, body string) (int, []byte, []byte) {
+	t.Helper()
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, os.Args[0], "-test.run=^TestProtocolHelperProcess$")
+	cmd.Env = append(os.Environ(), "PENTCLOUD_PROTOCOL_HELPER=1")
+	cmd.Stdin = strings.NewReader(body)
+	var out, stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	code := 0
+	if err != nil {
+		code = cmd.ProcessState.ExitCode()
+	}
+	return code, out.Bytes(), stderr.Bytes()
+}
+func TestProtocolRejectsMalformedUnknownAndTrailingInput(t *testing.T) {
+	for _, body := range []string{"not json", `{"unknown":true}`, `{} {}`} {
+		code, out, stderr := protocol(t, body)
+		if code != 2 || len(out) != 0 || !strings.Contains(string(stderr), "Invalid") {
+			t.Fatalf("invalid protocol accepted: %d %s %s", code, out, stderr)
+		}
+	}
+}
+func TestProtocolReturnsStructuredExecutionFailure(t *testing.T) {
+	code, out, _ := protocol(t, `{"argv":["/bin/sh"],"stdin":"","timeoutMs":1000}`)
+	var result Result
+	if code != 0 || json.Unmarshal(out, &result) != nil || result.ExitCode != -1 || result.Error != "Unsupported executable" {
+		t.Fatalf("wrong protocol response: %d %s", code, out)
 	}
 }

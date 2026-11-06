@@ -31,7 +31,8 @@
     "image:build": "node scripts/build-image.mjs",
     "prepublishOnly": "npm test && npm run test:runner && npm run test:image && npm run typecheck",
     "typecheck": "wrangler types --config examples/cloudflare/wrangler.jsonc .cache/worker-types.d.ts && tsc --noEmit --strict --skipLibCheck --module nodenext --moduleResolution nodenext --target es2022 .cache/worker-types.d.ts test/types.ts",
-    "test:image": "python3 -m unittest discover -s test -p \"*_test.py\""
+    "test:image": "python3 -m unittest discover -s test -p \"*_test.py\"",
+    "coverage": "node scripts/coverage.mjs"
   },
   "engines": {
     "node": ">=22"

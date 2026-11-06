@@ -94,3 +94,9 @@ The runtime supports Linux/amd64 on Cloudflare Containers. It does not make thes
 - [Third-party notices](THIRD_PARTY_NOTICES.md)
 
 MIT license for the PentCloud adapter. Included executables and base-image packages retain their upstream licenses.
+
+## Tool-pack inventory and quality
+
+See [tool packs and agent capabilities](docs/tool-packs.md) for the current Kali interface inventory, the needs of each agent, and the proposed next bundles. Candidate tools are clearly separated from released support.
+
+Run `npm run coverage` after the development setup in [testing and coverage](docs/testing.md). Reports use standard Node LCOV, Go coverprofile and Python Cobertura formats. Codecov configuration is included; service authentication and CI selection must be completed before its checks are active.
