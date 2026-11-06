@@ -1,6 +1,6 @@
 # PentCloud reference
 
-Searchsploit and pinned ExploitDB references in a separate native Cloudflare runtime. **Unreleased candidate.** readSource(path) returns bounded source bytes and SHA-256 from the same pinned revision, without execution.
+Searchsploit and pinned ExploitDB references in a separate native Cloudflare runtime. **Version 0.1.0 SDK.** readSource(path) returns bounded source bytes and SHA-256 from the same pinned revision, without execution.
 
 ```js
 export { ReferenceRunner } from '@memrov2/pentcloud-reference/worker';

@@ -1,6 +1,6 @@
 # Additional tool bundles
 
-These three **unreleased candidates** ([additional families](remaining-bundles.md)) use the same native Cloudflare Container approach as the released recon pack. They are separate images and independently versioned npm workspaces. A small shared runtime handles serialization, image/SDK pin verification and shutdown. They do not replace Kali or change PentCloud's production routing.
+These three **0.1.0 SDKs** ([additional families](remaining-bundles.md)) use the same native Cloudflare Container approach as the released recon pack. They are separate images and independently versioned npm workspaces. A small shared runtime handles serialization, image/SDK pin verification and shutdown. They do not replace Kali or change PentCloud's production routing.
 
 | Workspace | Tools | Initial interface |
 | --- | --- | --- |
@@ -40,7 +40,7 @@ Results retain raw stdout/stderr, exit status, timeout/output-limit state, image
 
 No adapter follows HTTP redirects automatically. The wrappers do **not** implement complete network scope enforcement or engagement-wide request budgeting. DNS, embedded upstream behavior and concurrent packs remain separate concerns. The adapters currently accept no login/header secret references; authenticated application integration must reuse PentCloud's existing secret resolution before a Kali path is replaced.
 
-## Build candidates
+## Build images
 
 From this checkout, use the existing Node.js, Go 1.26.5 and Python build requirements. Additional images contain their own pinned curl/OpenSSL/Python dependencies; they are not installed on the operator's system. No runtime dependency was removed from recon.
 

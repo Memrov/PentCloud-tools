@@ -26,11 +26,11 @@ The Node image-build/coverage orchestration scripts are not in the JavaScript li
 
 ## Codecov connection
 
-`codecov.yml` is validated by Codecov's official validator. Project coverage compares with its baseline and allows a one-percentage-point change. The initial 80% patch target is informational while the baseline and integration are established. There is no hardcoded coverage badge or claim that the service is connected before an actual report is accepted.
+`codecov.yml` is validated by Codecov's official validator. Project coverage compares with its baseline and allows a one-percentage-point change. The initial 80% patch target is informational while the baseline and integration are established. The README uses Codecov’s live badge, not a hardcoded percentage.
 
-Codecov's GitHub app must be connected to **only this repository**. Its uploader can accept the three standard reports from the execution environment; GitHub Actions is not intrinsically required. If Actions is enabled for package quality checks, those jobs must use synthetic fixtures only. Cloudflare credentials, npm publishing credentials, target credentials and assessment data do not belong in these jobs.
+The public [Quality workflow](../.github/workflows/quality.yml) runs synthetic unit fixtures and type checks, then uploads only `javascript.lcov`, `go.out` and `python.xml` with Codecov’s pinned official Action. The repository upload key is stored as an encrypted `CODECOV_TOKEN` Actions secret. The workflow token has read-only repository permissions. Cloudflare, npm publishing and target credentials are absent.
 
-Prefer the official Codecov uploader integration and OIDC where supported. Otherwise store only the repository upload credential in the chosen CI's secret mechanism, never source. Upload explicit report paths rather than searching the working directory or attaching logs/environment dumps. Do not enable paid features as part of basic coverage setup.
+Fork pull requests run tests without receiving the Codecov upload key. Only trusted repository branches upload reports. The configured upload key authenticates coverage uploads to the dashboard and badge. Additional PR annotations can be configured through Codecov’s GitHub app. No paid features are enabled.
 
 The generated reports contain counts and source-relative paths. Python is configured with `relative_files = True`; Go module paths are mapped back to repository paths in Codecov. Inspect report files before the first upload to confirm they contain no local operator paths or credentials.
 

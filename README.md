@@ -1,5 +1,10 @@
 # PentCloud tools
 
+[![Quality](https://github.com/Memrov/PentCloud-tools/actions/workflows/quality.yml/badge.svg)](https://github.com/Memrov/PentCloud-tools/actions/workflows/quality.yml)
+[![codecov](https://codecov.io/gh/Memrov/PentCloud-tools/branch/main/graph/badge.svg)](https://app.codecov.io/gh/Memrov/PentCloud-tools)
+[![npm](https://img.shields.io/npm/v/@memrov2/pentcloud-recon)](https://www.npmjs.com/package/@memrov2/pentcloud-recon)
+[![Adapter license: MIT](https://img.shields.io/badge/adapter_license-MIT-blue.svg)](LICENSE)
+
 Small, versioned tool runtimes for Cloudflare. The first package, **`@memrov2/pentcloud-recon`**, runs the original httpx, dnsx, Katana and Subfinder binaries together in one lightweight Linux container.
 
 Each tool is callable separately. Cloudflare Workflows can orchestrate the calls, or an agent harness can call the same Durable Object binding. This repository does not deploy or modify the PentCloud application.
@@ -73,7 +78,7 @@ Version `0.1.0` identifies the recon pack and its SDK contract. `tools.lock.json
 
 Pin the npm package and container image digest together. The runner checks the image's release manifest before executing commands and rejects a mismatched running image. Finish active runs before upgrading their SDK/image pair; retain prior images and matching adapters for retries and rollback. Publishing a package does not deploy it to customer accounts or replace a running container.
 
-To prepare a release: update the package/lock versions together, run the tests and Cloudflare smoke check, build the image, inspect `npm pack --dry-run`, and attach the verified npm tarball, image archive and SHA-256 checksums to the release. Authentication belongs in native CLI login or a secret store, never source files. No GitHub Actions are configured.
+To prepare a release: update the package/lock versions together, run the tests and Cloudflare smoke check, build the image, inspect `npm pack --dry-run`, and attach the verified npm tarball, image archive and SHA-256 checksums to the release. Authentication belongs in native CLI login or a secret store, never source files. GitHub Actions runs synthetic quality checks only; publishing uses the maintainer’s local npm authentication. No scanners or assessments run in Actions.
 
 ## Limits and safety
 
@@ -99,6 +104,6 @@ MIT license for the PentCloud adapter. Included executables and base-image packa
 
 See [tool packs and agent capabilities](docs/tool-packs.md) for the current Kali interface inventory, the needs of each agent, and the proposed next bundles. Candidate tools are clearly separated from released support.
 
-Run `npm run coverage` after the development setup in [testing and coverage](docs/testing.md). Reports use standard Node LCOV, Go coverprofile and Python Cobertura formats. Codecov configuration is included; service authentication and CI selection must be completed before its checks are active.
+Run `npm run coverage` after the development setup in [testing and coverage](docs/testing.md). Reports use standard Node LCOV, Go coverprofile and Python Cobertura formats. The public Quality workflow runs these synthetic tests and uploads explicit coverage reports to Codecov. Cloud account, npm publishing and target credentials are not available to the workflow.
 
-Ten additional candidate workspaces cover [HTTP, Nuclei and SQLmap](docs/bundles.md) and [the remaining tool families](docs/remaining-bundles.md). Each has its own pinned image and bounded interface. Browser automation stays with managed Browser Run. Recon remains the only published release; these candidates do not replace every Kali operation.
+The [release table](docs/releases.md) lists the npm SDKs and the three source-only candidates. [HTTP, Nuclei and SQLmap](docs/bundles.md) and [the other tool families](docs/remaining-bundles.md) each have their own pinned image and bounded interface. Browser automation stays with managed Browser Run. These profiles do not replace every Kali operation.

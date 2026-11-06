@@ -1,6 +1,6 @@
 # PentCloud pcap
 
-Offline TShark in a separate native Cloudflare runtime. **Unreleased candidate.** Pass a Uint8Array capture from your private evidence store; no live capture.
+Offline TShark in a separate native Cloudflare runtime. **Version 0.1.0 SDK.** Pass a Uint8Array capture from your private evidence store; no live capture.
 
 ```js
 export { PcapRunner } from '@memrov2/pentcloud-pcap/worker';

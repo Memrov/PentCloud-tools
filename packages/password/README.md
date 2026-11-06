@@ -1,6 +1,6 @@
 # PentCloud password
 
-Hashcat with a CPU OpenCL runtime in a separate native Cloudflare runtime. **Unreleased candidate.** Known SHA-256 dictionary profile only; no GPU or long-running cracking promise.
+Hashcat with a CPU OpenCL runtime in a separate native Cloudflare runtime. **Version 0.1.0 SDK.** Known SHA-256 dictionary profile only; no GPU or long-running cracking promise.
 
 ```js
 export { PasswordRunner } from '@memrov2/pentcloud-password/worker';

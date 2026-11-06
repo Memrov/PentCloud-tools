@@ -1,6 +1,6 @@
 # PentCloud file-analysis
 
-Offline Binwalk in a separate native Cloudflare runtime. **Unreleased candidate.** Uses pinned distro Binwalk 2.4.3; extraction and recursion are excluded.
+Offline Binwalk in a separate native Cloudflare runtime. **Version 0.1.0 SDK.** Uses pinned distro Binwalk 2.4.3; extraction and recursion are excluded.
 
 ```js
 export { FileRunner } from '@memrov2/pentcloud-file-analysis/worker';

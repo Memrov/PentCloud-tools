@@ -1,6 +1,6 @@
 # Remaining tool families
 
-Seven additional **unreleased candidates** extend the [HTTP, Nuclei and SQLmap bundles](bundles.md). Each uses an original upstream tool, a checksum-pinned image and a private Cloudflare Durable Object binding. No application route, agent permission or existing npm release changes automatically.
+Seven additional tool families extend the [HTTP, Nuclei and SQLmap bundles](bundles.md). Each uses an original upstream tool, a checksum-pinned image and a private Cloudflare Durable Object binding. No application route, agent permission or existing npm release changes automatically.
 
 | Workspace suffix | Tools and pins | Candidate interface | Deliberate gaps |
 | --- | --- | --- | --- |
@@ -12,7 +12,7 @@ Seven additional **unreleased candidates** extend the [HTTP, Nuclei and SQLmap b
 | `reference` | Original Searchsploit and ExploitDB indexes at the revision in `tools.lock.json` | Read-only keyword search; fetch an individual source file from the same pinned revision | Full exploit tree is fetched on demand, not bundled or executed. No automatic database update. |
 | `metasploit` | Official vendor image pinned by digest | Official HTTP MCP server through a private binding | No exposed callback/listener address, PostgreSQL database or certified parity for every framework module. |
 
-The SDK prefix is `@memrov2/pentcloud-`. Nothing in this table is published yet. Service, web-context and Metasploit have `private: true` in their manifests: Nmap has separate redistribution terms, WaybackURLs supplies no detected license grant, and the Metasploit vendor image includes Nmap. These publication blocks require resolution; an MIT adapter license does not license every included dependency.
+The SDK prefix is `@memrov2/pentcloud-`. PCAP, file-analysis, password and reference SDKs are in the [0.1.0 release](releases.md). Service, web-context and Metasploit have `private: true` in their manifests: Nmap has separate redistribution terms, WaybackURLs supplies no detected license grant, and the Metasploit vendor image includes Nmap. These publication blocks require resolution; an MIT adapter license does not license every included dependency.
 
 ## Use existing run identities and evidence storage
 
@@ -57,7 +57,7 @@ This is a migration map, not a claim that all 24 stock calls are interchangeable
 
 ## Build and lifecycle
 
-The [existing build requirements](bundles.md#build-candidates) apply. For example:
+The [existing build requirements](bundles.md#build-images) apply. For example:
 
 ```sh
 npm run image:pack:build -- pcap
@@ -91,7 +91,7 @@ The Metasploit HTTP-title module reports completion with a null structured resul
 
 All seven images rebuilt to identical digests while preserving their original base layers. Local validation includes 40 JavaScript tests, 13 Python tests, Go race tests, strict consumer types and compilation of the new binding example. Source/history/package credential checks and independent review passed. The Docker-engine build path could not execute on this host; the OCI assembly and actual Cloudflare deployment path were tested. Browser Run’s 24-operation migration map remains an integration checklist, not a new browser compatibility certification.
 
-Temporary runtimes, Workers and Workflows were removed, deployment leases revoked and production readback unchanged. No paid model call, application routing change, npm publication or release merge was part of these tests. Full operation parity and application integration remain release gates, as detailed in [the inventory](tool-packs.md).
+Temporary runtimes, Workers and Workflows were removed, deployment leases revoked and production readback unchanged. No paid model call or application routing change was part of these tests. SDK publication is tracked separately in the release table. Full operation parity and application integration remain release gates, as detailed in [the inventory](tool-packs.md).
 
 ## Primary references
 
