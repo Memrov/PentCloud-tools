@@ -51,6 +51,18 @@ The SQLmap adapter and shared runtime use the named `standard-1` preset for SQLm
 
 The SQLmap adapter `0.1.1-dev.3` corrects its public `ready().instance` declaration to `standard-1` and depends on shared runtime `0.1.1-dev.2`. It has the same executable profile as the preceding adapter candidate.
 
+## Unpublished candidate: shared runtime 0.1.1-dev.3 and recon 0.1.1-dev.2
+
+Recon now inherits the existing `createRunner` implementation. Its public `ready()`, `run()`, `retire()` and `stop()` methods, bounded profiles and `standard-1` preset remain. The factory chooses the preset once; password and SQLmap also keep `standard-1`, and its other packs keep `lite`. No factory options, lifecycle retries or process-helper behavior are added.
+
+This candidate requires a new recon SDK/image pair. The recon lock now includes `packId: "recon"` and pack version `0.1.1-dev.2`. Image preparation writes the complete lock and its `JSON.stringify`-compatible SHA-256 to `pack.json`, and installs the unchanged Go helper as `/opt/pentcloud-recon/bin/pack-exec`. Every upstream archive, binary and base-image pin remains unchanged. The runner rejects a mismatched lock or actual running image before dispatching a profile. Serialized work, native process deadlines and durable retirement use the common implementation.
+
+The recon package depends exactly on runtime `0.1.1-dev.3`; the other ten SDK versions/dependencies are unchanged. Existing adapters can still resolve their older exact runtimes. Consumers deliberately overriding them to the new runtime must verify every pack and inspect the installed resolution. Keep old SDK/image pairs for rollback, and drain active recon work before adopting this manifest change: updating a named image does not replace a running Container.
+
+These versions are prepared candidates, not published releases. Before publication, complete local quality and exact-image native checks, inspect the two exact tarballs, and verify a clean consumer install. Publish the reviewed runtime tarball first, then recon, with the `dev` tag; keep `latest` at `0.1.0`. App registry pins and immutable image-source pins follow publication and consumer verification. No npm or Cloudflare credentials are added to CI.
+
+Design references refreshed on 2026-11-06: [direct Container API](https://developers.cloudflare.com/containers/api/durable-object-container/), [named image management](https://developers.cloudflare.com/containers/guides/image-management/), and [implementation migration](https://developers.cloudflare.com/containers/guides/migrate-to-durable-object-container-api/). The current official [basic example at a17055c](https://github.com/cloudflare/containers/blob/a17055ca4f64b8f7fea6dfaa62dfb2c06a954a2b/examples/basic/src/index.ts) still uses the older `Container` wrapper. Reusing this repository's direct-API factory is the smaller change and retains its persistent storage and lifecycle behavior.
+
 ## Verification and dependency inventory
 
 Download the assets for the exact [release tag](https://github.com/Memrov/PentCloud-tools/releases) you selected, including `SHA256SUMS`, and verify them locally with `sha256sum -c SHA256SUMS` (or `shasum -a 256 -c SHA256SUMS` on macOS). Check the package version, `tools.lock.json` and matching image digest before use. Checksums detect a mismatch with the published checksum file; they do not prove how an artifact was built.

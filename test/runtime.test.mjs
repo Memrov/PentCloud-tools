@@ -2,6 +2,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { registerHooks } from "node:module";
 import { setImmediate as nextTurn } from "node:timers/promises";
+import { createHash } from "node:crypto";
+import { buildCommand } from "../src/index.mjs";
 const moduleURL =
   "data:text/javascript," +
   encodeURIComponent(
@@ -15,6 +17,8 @@ const hooks = registerHooks({
   },
 });
 const { ReconRunner } = await import("../src/worker.mjs");
+// Import edited source directly: other adapters may resolve older nested runtimes.
+const { createRunner } = await import("../packages/runtime/src/worker.mjs");
 hooks.deregister();
 
 test("a hung native readiness command cannot reset the overall startup deadline", async (t) => {
@@ -68,13 +72,21 @@ const release = JSON.parse(
     await import("node:fs/promises")
   ).readFile(new URL("../tools.lock.json", import.meta.url), "utf8"),
 );
+const manifestFor = (lock) => ({
+  lockSha256: createHash("sha256").update(JSON.stringify(lock)).digest("hex"),
+  lock,
+});
 const encoded = (value) => new TextEncoder().encode(value).buffer;
-function nativeFixture() {
+function nativeFixture(Runner = ReconRunner, lock = release) {
+  const packId = lock.packId ?? "recon";
+  let entered;
+  const started = new Promise(resolve => { entered = resolve; });
   const records = new Map();
   const state = {
     running: false,
     image: "recon-image",
-    manifest: JSON.stringify(release),
+    manifest: JSON.stringify(manifestFor(lock)),
+    commands: [],
     manifestExit: 0,
     helper: async (command) => ({
       exitCode: 0,
@@ -91,7 +103,7 @@ function nativeFixture() {
     }),
   };
   const container = {
-    images: { recon: "recon-image" },
+    images: { [packId]: "recon-image" },
     get running() {
       return state.running;
     },
@@ -117,8 +129,10 @@ function nativeFixture() {
             stdout: encoded(state.manifest),
             stderr: encoded(""),
           };
-        assert.equal(argv[0], "/opt/pentcloud-recon/bin/recon-exec");
+        assert.equal(argv[0], `/opt/pentcloud-${packId}/bin/pack-exec`);
         const command = JSON.parse(await new Response(options.stdin).text());
+        state.commands.push(command);
+        entered();
         const response = await state.helper(command);
         return {
           exitCode: response.helperExit ?? 0,
@@ -128,7 +142,8 @@ function nativeFixture() {
       },
     }),
   };
-  return { state, container, runner: new ReconRunner({ container, storage: {get: async k => records.get(k),put: async (k,v) => records.set(k,v)} }, {}) };
+  const ctx = { container, storage: {get: async k => records.get(k),put: async (k,v) => records.set(k,v)} };
+  return { state, container, ctx, started, runner: new Runner(ctx, {}) };
 }
 
 test("structured tool failures remain visible and do not poison the next call", async () => {
@@ -159,7 +174,7 @@ test("structured tool failures remain visible and do not poison the next call", 
 });
 
 test("concurrent requests and stop wait for the active command", async () => {
-  const { runner, state } = nativeFixture();
+  const { runner, state, started } = nativeFixture();
   let unblock;
   const blocked = new Promise((resolve) => {
     unblock = resolve;
@@ -186,7 +201,8 @@ test("concurrent requests and stop wait for the active command", async () => {
     stopSettled = true;
     return value;
   });
-  await nextTurn();
+  await started;
+  assert.equal(state.commands.length, 1);
   assert.equal(secondSettled, false);
   assert.equal(stopSettled, false);
   assert.equal(state.running, true);
@@ -194,6 +210,7 @@ test("concurrent requests and stop wait for the active command", async () => {
   const [a, b, s] = await Promise.all([active, second, stopped]);
   assert.equal(a.tool, "dnsx");
   assert.equal(b.tool, "dnsx");
+  assert.equal(state.commands.length, 2);
   assert.deepEqual(s, { stopped: true });
   assert.equal(state.running, false);
 });
@@ -204,7 +221,7 @@ test("changing the configured image never destroys an existing runtime implicitl
   state.image = "older-image";
   await assert.rejects(
     runner.run({ tool: "dnsx", target: "example.com" }),
-    /image changed/,
+    /image changed/i,
   );
   assert.equal(state.running, true);
   await runner.stop();
@@ -213,14 +230,17 @@ test("changing the configured image never destroys an existing runtime implicitl
 
 test("damaged, missing and incompatible image manifests are rejected", async () => {
   for (const [manifest, manifestExit, message] of [
-    ["not json", 0, /Invalid recon image release manifest/],
-    ["", 1, /missing its release manifest/],
+    ["not json", 0, /Invalid pack image manifest/],
+    [JSON.stringify(manifestFor(release)), 1, /pins do not match/],
     [
-      JSON.stringify({ ...release, packVersion: "wrong-release" }),
+      JSON.stringify(manifestFor({ ...release, packVersion: "wrong-release" })),
       0,
-      /versions do not match/,
+      /pins do not match/,
     ],
-    [JSON.stringify({ ...release, tools: [] }), 0, /versions do not match/],
+    [JSON.stringify(manifestFor({ ...release, tools: [] })), 0, /pins do not match/],
+    [JSON.stringify(manifestFor({ ...release, baseImage: "changed" })), 0, /pins do not match/],
+    [JSON.stringify(manifestFor({ ...release, tools: release.tools.map(t => ({ ...t, binarySha256: "wrong" })) })), 0, /pins do not match/],
+    [JSON.stringify(release), 0, /pins do not match/],
   ]) {
     const { runner, state } = nativeFixture();
     state.manifest = manifest;
@@ -229,6 +249,7 @@ test("damaged, missing and incompatible image manifests are rejected", async () 
       runner.run({ tool: "dnsx", target: "example.com" }),
       message,
     );
+    assert.equal(state.commands.length, 0);
     await runner.stop();
   }
 });
@@ -238,8 +259,8 @@ test("malformed execution responses fail explicitly and the queue can recover", 
   const healthy = state.helper;
   for (const [response, message] of [
     [{ helperExit: 2, raw: "" }, /execution helper failed/],
-    [{ raw: "not json" }, /Invalid recon execution response/],
-    [{ exitCode: 0 }, /Incomplete recon execution response/],
+    [{ raw: "not json" }, /Invalid pack execution response/],
+    [{ exitCode: 0 }, /Incomplete pack execution response/],
   ]) {
     state.helper = async () => response;
     await assert.rejects(
@@ -279,4 +300,85 @@ test("recon retirement permanently closes the owned identity", async () => {
   await runner.ready();await runner.retire();
   await assert.rejects(runner.ready(),/retired/);
   assert(!state.running);
+});
+
+test("shared source factory preserves each pack preset and network policy", async () => {
+  for (const packId of ["recon", "http", "nuclei", "sqlmap", "pcap", "file-analysis", "password", "reference", "service", "web-context"]) {
+    const lock = packId === "recon" ? { ...release, packId } : (await import(`../packages/${packId}/tools.lock.json`, { with: { type: "json" } })).default;
+    const Runner = createRunner(lock, buildCommand);
+    const { runner, state } = nativeFixture(Runner, lock);
+    const ready = await runner.ready();
+    const instance = ["recon", "password", "sqlmap"].includes(packId) ? "standard-1" : "lite";
+    assert.equal(ready.instance, instance, packId);
+    assert.equal(state.startOptions.instance, instance, packId);
+    assert.equal(state.startOptions.enableInternet, lock.runtime?.enableInternet ?? true, packId);
+    assert.deepEqual(state.startOptions.labels, { pack: packId, version: lock.packVersion });
+    assert.equal(state.commands.length, 0);
+    await runner.stop();
+  }
+});
+
+test("recon dispatches every bounded profile through the shared helper", async () => {
+  const { runner, state } = nativeFixture();
+  for (const tool of ["httpx", "dnsx", "katana", "subfinder"]) {
+    const input = { tool, target: ["httpx", "katana"].includes(tool) ? "https://example.com/" : "example.com" };
+    const result = await runner.run(input);
+    assert.deepEqual(state.commands.at(-1), buildCommand(input));
+    assert.equal(result.tool, tool);
+    assert.equal(result.toolVersion, release.tools.find(t => t.tool === tool).version);
+    assert.equal(result.packVersion, release.packVersion);
+    assert.equal(result.packId, "recon");
+    assert.equal(result.image, "recon-image");
+  }
+  await runner.stop();
+});
+
+test("recon validation rejects arbitrary flags before starting a container", () => {
+  const { runner, state } = nativeFixture();
+  assert.throws(() => runner.run({ tool: "dnsx", target: "example.com", args: ["--extra"] }), /only tool and target/);
+  assert.equal(state.running, false);
+  assert.equal(state.commands.length, 0);
+});
+
+test("recon verifies actual image identity after reading the manifest", async () => {
+  const { runner, state, container } = nativeFixture();
+  container.inspect = async () => ({ image: "unexpected-image" });
+  await assert.rejects(runner.run({ tool: "dnsx", target: "example.com" }), /verify pack image identity/);
+  assert.equal(state.commands.length, 0);
+  await runner.stop();
+});
+
+test("recon retirement drains active work and survives object reconstruction", async () => {
+  const { runner, state, ctx, started } = nativeFixture();
+  let unblock;
+  const blocked = new Promise(resolve => { unblock = resolve; });
+  const helper = state.helper;
+  state.helper = async command => { await blocked; return helper(command); };
+  const active = runner.run({ tool: "dnsx", target: "example.com" });
+  const retirement = runner.retire();
+  const delayed = runner.run({ tool: "dnsx", target: "later.example" });
+  const rejected = assert.rejects(delayed, /retired/);
+  await started;
+  assert.equal(await ctx.storage.get("retired"), undefined);
+  assert.equal(state.running, true);
+  assert.equal(state.commands.length, 1);
+  unblock();
+  await active;
+  assert.deepEqual(await retirement, { stopped: true, retired: true });
+  await rejected;
+  const reconstructed = new ReconRunner(ctx, {});
+  await assert.rejects(reconstructed.ready(), /retired/);
+  await assert.rejects(reconstructed.run({ tool: "dnsx", target: "example.com" }), /retired/);
+  assert.deepEqual(await reconstructed.stop(), { stopped: true });
+  assert.equal(state.running, false);
+  assert.equal(state.commands.length, 1);
+});
+
+test("recon stop remains restartable without clearing retirement storage", async () => {
+  const { runner, state } = nativeFixture();
+  await runner.ready();
+  await runner.stop();
+  await runner.ready();
+  assert.equal(state.running, true);
+  await runner.stop();
 });

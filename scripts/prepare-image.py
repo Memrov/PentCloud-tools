@@ -29,9 +29,10 @@ def main():
  if version!='go1.26.5':raise RuntimeError('Build with the pinned Go 1.26.5 toolchain')
  with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:print('Verified upstream archives and binaries: '+', '.join(pool.map(download,lock['tools'])),flush=True)
  environment={**os.environ,'GOOS':'linux','GOARCH':'amd64','CGO_ENABLED':'0'}
- helper=image/'opt/pentcloud-recon/bin/recon-exec'
+ helper=image/'opt/pentcloud-recon/bin/pack-exec'
  subprocess.run(['go','build','-buildvcs=false','-trimpath','-ldflags=-buildid=','-o',str(helper),'./runner'],cwd=ROOT,env=environment,check=True)
- manifest={**lock,'helperSha256':hashlib.sha256(helper.read_bytes()).hexdigest()}
+ lock_hash=hashlib.sha256(json.dumps(lock,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
+ manifest={'lockSha256':lock_hash,'lock':lock,'helperSha256':hashlib.sha256(helper.read_bytes()).hexdigest()}
  (image/'opt/pentcloud-recon/pack.json').write_text(json.dumps(manifest,indent=2)+'\n')
  for name in ['LICENSE','THIRD_PARTY_NOTICES.md']:
   out=image/'usr/share/licenses/pentcloud-recon'/name;out.parent.mkdir(parents=True,exist_ok=True);out.write_bytes((ROOT/name).read_bytes())
