@@ -18,7 +18,8 @@ test("large tool evidence uses a native streamed step and a compact completion r
   };
   let stored;
   const step = {
-    async do(_name, _config, callback) {
+    async do(_name, config, callback) {
+      assert.equal(config.timeout, "20 minutes");
       const value = await callback();
       if (value instanceof ReadableStream) {
         stored = await new Response(value).text();

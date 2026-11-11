@@ -1,3 +1,4 @@
+import { TOOL_TIMEOUT_MS } from "@memrov2/pentcloud-tool-runtime";
 import lock from "../tools.lock.json" with { type: "json" };
 export { lock };
 export function referencePath(path) {
@@ -76,6 +77,6 @@ export function buildCommand(input) {
   return {
     argv: ["/opt/pentcloud-reference/bin/searchsploit", "--json", input.query],
     stdin: "",
-    timeoutMs: 75000,
+    timeoutMs: TOOL_TIMEOUT_MS,
   };
 }

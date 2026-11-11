@@ -1,3 +1,4 @@
+import { TOOL_TIMEOUT_MS } from "@memrov2/pentcloud-tool-runtime";
 import lock from "../tools.lock.json" with { type: "json" };
 export { lock };
 export function buildCommand(input) {
@@ -52,7 +53,7 @@ export function buildCommand(input) {
       "--max-rate",
       "2",
       "--host-timeout",
-      "30s",
+      `${TOOL_TIMEOUT_MS / 1000}s`,
       "--open",
       "-oX",
       "-",
@@ -103,6 +104,6 @@ export function buildCommand(input) {
   return {
     argv: ["/opt/pentcloud-service/bin/" + input.tool, ...args],
     stdin: "",
-    timeoutMs: 75000,
+    timeoutMs: TOOL_TIMEOUT_MS,
   };
 }

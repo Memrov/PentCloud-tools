@@ -1,3 +1,4 @@
+import { TOOL_TIMEOUT_MS } from "@memrov2/pentcloud-tool-runtime";
 import lock from "../tools.lock.json" with { type: "json" };
 export { lock };
 export function buildCommand(input) {
@@ -17,7 +18,7 @@ export function buildCommand(input) {
       "/tmp/pentcloud-file-analysis/input.bin",
     ],
     stdin: "",
-    timeoutMs: 75000,
+    timeoutMs: TOOL_TIMEOUT_MS,
     requiredFiles: ["input"],
   };
 }

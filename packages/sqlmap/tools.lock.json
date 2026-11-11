@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "packVersion": "0.1.0",
+  "packVersion": "0.1.1-dev.4",
   "platform": "linux/amd64",
   "packId": "sqlmap",
   "baseImage": "docker.io/library/python@sha256:bdd0cc97663b9b920570d0f1b4601ee18ed895221a0594ca1d9b5e2f26adba83",
@@ -14,5 +14,12 @@
     }
   ],
   "assets": [],
-  "executables": ["sqlmap"]
+  "executables": [
+    "sqlmap"
+  ],
+  "execution": {
+    "timeoutMs": 900000,
+    "execTimeoutMs": 930000,
+    "synchronous": true
+  }
 }

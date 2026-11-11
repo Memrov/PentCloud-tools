@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "packId": "pcap",
-  "packVersion": "0.1.0",
+  "packVersion": "0.1.1-dev.4",
   "platform": "linux/amd64",
   "baseImage": "docker.io/library/debian@sha256:a72b4433de1cf7d6bae0c4cee74d0547f58601a643b3375f070c51600d63b6b2",
   "tools": [
@@ -382,5 +382,10 @@
   "files": true,
   "links": {
     "tshark": "/usr/bin/tshark"
+  },
+  "execution": {
+    "timeoutMs": 900000,
+    "execTimeoutMs": 930000,
+    "synchronous": true
   }
 }

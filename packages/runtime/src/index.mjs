@@ -1,3 +1,9 @@
+// Live tool execution, including a separate allowance for helper output to drain.
+export const TOOL_TIMEOUT_MS = 15 * 60 * 1000;
+export const TOOL_EXEC_TIMEOUT_MS = TOOL_TIMEOUT_MS + 30 * 1000;
+export const TOOL_IDLE_TIMEOUT_MS = TOOL_EXEC_TIMEOUT_MS + 30 * 1000;
+export const TOOL_MCP_TIMEOUT_MS = 20 * 60 * 1000;
+
 export function request(input, allowed, tools) {
   if (
     !input ||
@@ -73,7 +79,7 @@ export async function prepareFiles(required, input = {}) {
 export async function runWorkflowStep(step, runner, input, files) {
   const stream = await step.do(
     "tool-evidence",
-    { retries: { limit: 0, delay: "1 second" }, timeout: "3 minutes" },
+    { retries: { limit: 0, delay: "1 second" }, timeout: "20 minutes" },
     async () => {
       const result = await runner.run(input, files);
       return new Blob([JSON.stringify(result)], {

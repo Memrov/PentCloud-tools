@@ -1,4 +1,4 @@
-import { request } from "@memrov2/pentcloud-tool-runtime";
+import { request, TOOL_TIMEOUT_MS } from "@memrov2/pentcloud-tool-runtime";
 import lock from "../tools.lock.json" with { type: "json" };
 export { lock };
 export function buildCommand(input) {
@@ -25,7 +25,7 @@ export function buildCommand(input) {
       "-timeout",
       "10",
       "-maxtime",
-      "40",
+      String(TOOL_TIMEOUT_MS / 1000),
       "-mc",
       "all",
       "-fc",
@@ -37,7 +37,7 @@ export function buildCommand(input) {
       "--show-error",
       "--include",
       "--max-time",
-      "30",
+      String(TOOL_TIMEOUT_MS / 1000),
       "--connect-timeout",
       "10",
       "--max-filesize",
@@ -74,6 +74,6 @@ export function buildCommand(input) {
   return {
     argv: ["/opt/pentcloud-http/bin/" + input.tool, ...args],
     stdin: "",
-    timeoutMs: 75000,
+    timeoutMs: TOOL_TIMEOUT_MS,
   };
 }

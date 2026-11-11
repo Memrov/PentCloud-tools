@@ -1,5 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
-import { prepareFiles } from "./index.mjs";
+import { prepareFiles, TOOL_EXEC_TIMEOUT_MS, TOOL_IDLE_TIMEOUT_MS } from "./index.mjs";
 import { execOutput } from "./exec.mjs";
 const decode = (data) => new TextDecoder().decode(data);
 const hash = async (value) =>
@@ -28,6 +28,13 @@ export function createRunner(lock, buildCommand) {
   const root = "/opt/pentcloud-" + lock.packId;
   const instance = ["recon", "password", "sqlmap"].includes(lock.packId) ? "standard-1" : "lite";
   return class ToolRunner extends DurableObject {
+    constructor(ctx, env) {
+      super(ctx, env);
+      if (ctx.container?.running)
+        void ctx.blockConcurrencyWhile(() =>
+          ctx.container.setInactivityTimeout(TOOL_IDLE_TIMEOUT_MS),
+        );
+    }
     #queue = Promise.resolve();
     #serialize(action) {
       const result = this.#queue.then(action);
@@ -53,7 +60,7 @@ export function createRunner(lock, buildCommand) {
           enableInternet: lock.runtime?.enableInternet ?? true,
           labels: { pack: lock.packId, version: lock.packVersion },
         });
-      await container.setInactivityTimeout(120000);
+      await container.setInactivityTimeout(TOOL_IDLE_TIMEOUT_MS);
       const deadline = Date.now() + 90000;
       while (true) {
         try {
@@ -109,7 +116,7 @@ export function createRunner(lock, buildCommand) {
             ...command,
             ...(Object.keys(attachments).length ? { files: attachments } : {}),
           }),
-          90000,
+          TOOL_EXEC_TIMEOUT_MS,
         );
         if (output.exitCode !== 0)
           throw new Error("Pack execution helper failed");

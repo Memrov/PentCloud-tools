@@ -26,6 +26,7 @@ var runtimeHome = "/tmp/pentcloud-recon"
 var allowFiles = "false"
 
 const outputLimit = 2 * 1024 * 1024
+const maxExecutionMs = 15 * 60 * 1000
 
 type Input struct {
 	Argv      []string             `json:"argv"`
@@ -107,7 +108,7 @@ func execute(in Input, binDir string) Result {
 		r.Error = "Unsupported executable"
 		return r
 	}
-	if in.TimeoutMs < 1 || in.TimeoutMs > 90000 || len(in.Stdin) > 16384 || len(in.Argv) > 100 {
+	if in.TimeoutMs < 1 || in.TimeoutMs > maxExecutionMs || len(in.Stdin) > 16384 || len(in.Argv) > 100 {
 		r.Error = "Invalid execution limits"
 		return r
 	}

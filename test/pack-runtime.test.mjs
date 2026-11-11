@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { registerHooks } from "node:module";
 import { setImmediate as nextTurn } from "node:timers/promises";
 import lock from "../packages/http/tools.lock.json" with { type: "json" };
+import { TOOL_TIMEOUT_MS, TOOL_EXEC_TIMEOUT_MS, TOOL_IDLE_TIMEOUT_MS } from "../packages/runtime/src/index.mjs";
 const hooks = registerHooks({
   resolve(s, c, next) {
     return s === "cloudflare:workers"
@@ -54,7 +55,7 @@ function fixture() {
       state.startOptions = options;
       state.running = true;
     },
-    setInactivityTimeout: async () => {},
+    setInactivityTimeout: async (ms) => { state.idleTimeoutMs = ms; },
     inspect: async () => ({ image: state.image }),
     destroy: async () => {
       state.running = false;
@@ -97,13 +98,41 @@ test("a pack rejects a mismatched asset lock before executing tools", async () =
   await runner.stop();
   assert(!state.running);
 });
+test("reconstructed tool objects restore the live execution inactivity allowance", async () => {
+  let idle;
+  new HttpRunner({
+    container: { running: true, setInactivityTimeout: async ms => { idle=ms; } },
+    blockConcurrencyWhile: async fn => fn(),
+  }, {});
+  await nextTurn();
+  assert.equal(idle, TOOL_IDLE_TIMEOUT_MS);
+});
 test("completed native exec processes cannot receive a later deadline signal", async t=>{
   t.mock.timers.enable({apis:["Date","setTimeout"],now:0});
   t.mock.method(AbortSignal,"timeout",ms=>{const c=new AbortController();setTimeout(()=>c.abort(),ms);return c.signal;});
   const {runner,state}=fixture();
   await runner.run({tool:"curl",target:"https://example.com/"});
-  t.mock.timers.tick(90001);await nextTurn();
+  t.mock.timers.tick(TOOL_EXEC_TIMEOUT_MS + 1);await nextTurn();
   assert.deepEqual(state.lateSignals,[],"a completed readiness/manifest/tool process must not be signaled after its PID can be reused");
+});
+test("a live pack call survives the old execution and idle deadlines", async t => {
+  t.mock.timers.enable({apis:["Date","setTimeout"],now:0});
+  const {runner,state,started}=fixture();
+  const healthy=state.helper;
+  state.helper=async command=>{
+    assert.equal(command.timeoutMs, TOOL_TIMEOUT_MS);
+    await new Promise(resolve=>setTimeout(resolve,125000));
+    return healthy(command);
+  };
+  let settled=false;
+  const result=runner.run({tool:"curl",target:"https://example.com/"}).finally(()=>{settled=true;});
+  await started;
+  t.mock.timers.tick(120001);await nextTurn();
+  assert.equal(settled,false,"the live request must still be waiting after two minutes");
+  assert.equal(state.idleTimeoutMs,TOOL_IDLE_TIMEOUT_MS);
+  t.mock.timers.tick(5000);await nextTurn();
+  assert.equal((await result).exitCode,0);
+  assert.deepEqual(state.lateSignals,[]);
 });
 test("pack results retain failure evidence and the queue recovers", async () => {
   const { runner, state } = fixture();

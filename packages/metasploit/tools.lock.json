@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "packId": "metasploit",
-  "packVersion": "0.1.0",
+  "packVersion": "0.1.1-dev.4",
   "platform": "linux/amd64",
   "baseImage": "docker.io/metasploitframework/metasploit-framework@sha256:8096709486bce8b5f35980f2aea42dc7cd83e34ebbeb4d56eab3339847de258d",
   "tools": [
@@ -20,5 +20,10 @@
   },
   "privateOnlyReasons": [
     "Vendor image includes Nmap; public image redistribution requires review."
-  ]
+  ],
+  "execution": {
+    "timeoutMs": 900000,
+    "execTimeoutMs": 930000,
+    "synchronous": true
+  }
 }

@@ -1,3 +1,4 @@
+import { TOOL_TIMEOUT_MS } from "@memrov2/pentcloud-tool-runtime";
 import lock from "../tools.lock.json" with { type: "json" };
 export const packVersion = lock.packVersion;
 export const tools = Object.freeze(
@@ -94,7 +95,7 @@ export function buildCommand(input) {
         "-rl",
         "2",
         "-ct",
-        "20s",
+        `${TOOL_TIMEOUT_MS / 1000}s`,
         "-timeout",
         "10",
         "-jc",
@@ -137,8 +138,8 @@ export function buildCommand(input) {
         "-timeout",
         "10",
         "-max-time",
-        "1",
+        String(TOOL_TIMEOUT_MS / 60000),
       ];
   }
-  return { argv: [prefix + tool, ...args], stdin, timeoutMs: 75000 };
+  return { argv: [prefix + tool, ...args], stdin, timeoutMs: TOOL_TIMEOUT_MS };
 }

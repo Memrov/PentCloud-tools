@@ -1,5 +1,6 @@
+import { TOOL_EXEC_TIMEOUT_MS } from "./index.mjs";
 /** Clear the deadline at process exit, before buffered output may finish draining. */
-export async function execOutput(container, argv, { timeoutMs = 90000, ...options } = {}) {
+export async function execOutput(container, argv, { timeoutMs = TOOL_EXEC_TIMEOUT_MS, ...options } = {}) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   const clear = () => clearTimeout(timer);

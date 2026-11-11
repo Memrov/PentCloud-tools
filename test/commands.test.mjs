@@ -24,7 +24,7 @@ test("httpx receives a URL through stdin without a shell", () => {
         "10",
       ],
       stdin: "https://example.com/\n",
-      timeoutMs: 75000,
+      timeoutMs: 900000,
     },
   );
 });
@@ -47,7 +47,7 @@ test("dnsx requests both IP record families for the hostname", () => {
       "1",
     ],
     stdin: "api.example.com\n",
-    timeoutMs: 75000,
+    timeoutMs: 900000,
   });
 });
 test("Katana crawl scope escapes regex characters and includes the starting path", () => {
@@ -70,7 +70,7 @@ test("Katana crawl scope escapes regex characters and includes the starting path
     "-rl",
     "2",
     "-ct",
-    "20s",
+    "900s",
     "-timeout",
     "10",
     "-jc",
@@ -96,10 +96,10 @@ test("Subfinder performs bounded passive crtname discovery", () => {
       "-timeout",
       "10",
       "-max-time",
-      "1",
+      "15",
     ],
     stdin: "",
-    timeoutMs: 75000,
+    timeoutMs: 900000,
   });
 });
 test("credentials, newline records and CLI options cannot become targets", () => {

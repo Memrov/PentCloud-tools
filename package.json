@@ -1,6 +1,6 @@
 {
   "name": "@memrov2/pentcloud-recon",
-  "version": "0.1.1-dev.2",
+  "version": "0.1.1-dev.4",
   "description": "A small Cloudflare-native runtime for httpx, dnsx, Katana and Subfinder",
   "type": "module",
   "license": "MIT",
@@ -51,6 +51,6 @@
     "packages/*"
   ],
   "dependencies": {
-    "@memrov2/pentcloud-tool-runtime": "0.1.1-dev.3"
+    "@memrov2/pentcloud-tool-runtime": "0.1.1-dev.4"
   }
 }

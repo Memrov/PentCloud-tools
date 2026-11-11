@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "packId": "recon",
-  "packVersion": "0.1.1-dev.2",
+  "packVersion": "0.1.1-dev.4",
   "platform": "linux/amd64",
   "baseImage": "docker.io/library/alpine@sha256:85f2b723e106c34644cd5851d7e81ee87da98ac54672b29947c052a45d31dc2f",
   "tools": [
@@ -41,5 +41,10 @@
       "url": "https://github.com/projectdiscovery/subfinder/releases/download/v2.17.0/subfinder_2.17.0_linux_amd64.zip",
       "binarySha256": "bf4ad8590702b0bb92be9b3be185f96a230b047c9b97f2831cf8914344f0b15a"
     }
-  ]
+  ],
+  "execution": {
+    "timeoutMs": 900000,
+    "execTimeoutMs": 930000,
+    "synchronous": true
+  }
 }

@@ -30,6 +30,13 @@ func TestFailureExitAndStderr(t *testing.T) {
 		t.Fatalf("wrong result: %+v", r)
 	}
 }
+func TestExtendedExecutionBudgetIsAccepted(t *testing.T) {
+	d := fixture(t, "printf 'extended budget accepted'\n")
+	r := execute(input(900000), d)
+	if r.ExitCode != 0 || r.Stdout != "extended budget accepted" || r.TimedOut {
+		t.Fatalf("extended execution budget was rejected: %+v", r)
+	}
+}
 func TestEnvironmentDoesNotInheritSecrets(t *testing.T) {
 	t.Setenv("PENTCLOUD_TEST_SECRET", "must-not-be-inherited")
 	d := fixture(t, "printf '%s' \"${PENTCLOUD_TEST_SECRET-unset}\"\n")
@@ -92,7 +99,7 @@ func TestExecutionLimitsRejectBeforeStarting(t *testing.T) {
 	}{
 		{Input{}, "Missing executable"},
 		{input(0), "Invalid execution limits"},
-		{input(90001), "Invalid execution limits"},
+		{input(900001), "Invalid execution limits"},
 		{Input{Argv: input(1000).Argv, TimeoutMs: 1000, Stdin: strings.Repeat("x", 16385)}, "Invalid execution limits"},
 		{Input{Argv: tooManyArgs, TimeoutMs: 1000}, "Invalid execution limits"},
 	} {

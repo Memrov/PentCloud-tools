@@ -1,4 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
+import { TOOL_IDLE_TIMEOUT_MS } from "@memrov2/pentcloud-tool-runtime";
 import { execOutput } from "@memrov2/pentcloud-tool-runtime/exec";
 import { lock } from "./index.mjs";
 const decode = (x) => new TextDecoder().decode(x);
@@ -15,6 +16,13 @@ const digest = async () =>
     .join("");
 /** Private binding only. The upstream MCP server owns RPC processes and tools. */
 export class MetasploitRunner extends DurableObject {
+  constructor(ctx, env) {
+    super(ctx, env);
+    if (ctx.container?.running)
+      void ctx.blockConcurrencyWhile(() =>
+        ctx.container.setInactivityTimeout(TOOL_IDLE_TIMEOUT_MS),
+      );
+  }
   #queue = Promise.resolve();
   #serial(action) {
     const result = this.#queue.then(action);
@@ -64,7 +72,7 @@ export class MetasploitRunner extends DurableObject {
         enableInternet: true,
         labels: { pack: "metasploit", version: lock.packVersion },
       });
-    await c.setInactivityTimeout(240000);
+    await c.setInactivityTimeout(TOOL_IDLE_TIMEOUT_MS);
     const deadline = Date.now() + 180000;
     let verified = false;
     while (Date.now() < deadline) {
@@ -91,7 +99,7 @@ export class MetasploitRunner extends DurableObject {
             signal: AbortSignal.timeout(5000),
           });
         await r.body?.cancel();
-        if ([200, 400, 405, 406].includes(r.status)) {await c.setInactivityTimeout(120000);return token;}
+        if ([200, 400, 405, 406].includes(r.status)) {await c.setInactivityTimeout(TOOL_IDLE_TIMEOUT_MS);return token;}
         if (r.status === 401)
           throw new Error("Internal MCP authentication failed");
       } catch (error) {

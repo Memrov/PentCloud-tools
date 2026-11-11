@@ -1,3 +1,4 @@
+import { TOOL_TIMEOUT_MS } from "@memrov2/pentcloud-tool-runtime";
 import lock from "../tools.lock.json" with { type: "json" };
 export { lock };
 export function buildCommand(input) {
@@ -23,14 +24,14 @@ export function buildCommand(input) {
           "--quiet",
           "--potfile-disable",
           "--restore-disable",
-          "--runtime=20",
+          `--runtime=${TOOL_TIMEOUT_MS / 1000}`,
           path,
           "/tmp/pentcloud-password/dictionary.bin",
         ];
   return {
     argv: ["/opt/pentcloud-password/bin/hashcat", ...args],
     stdin: "",
-    timeoutMs: 75000,
+    timeoutMs: TOOL_TIMEOUT_MS,
     requiredFiles: view === "identify" ? ["input"] : ["input", "dictionary"],
   };
 }

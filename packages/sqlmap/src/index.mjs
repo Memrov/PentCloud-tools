@@ -1,4 +1,4 @@
-import { request } from "@memrov2/pentcloud-tool-runtime";
+import { request, TOOL_TIMEOUT_MS } from "@memrov2/pentcloud-tool-runtime";
 import lock from "../tools.lock.json" with { type: "json" };
 export { lock };
 export function buildCommand(input) {
@@ -64,6 +64,6 @@ export function buildCommand(input) {
   return {
     argv: ["/opt/pentcloud-sqlmap/bin/sqlmap", ...args],
     stdin: "",
-    timeoutMs: 75000,
+    timeoutMs: TOOL_TIMEOUT_MS,
   };
 }

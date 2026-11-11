@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "packVersion": "0.1.0",
+  "packVersion": "0.1.1-dev.4",
   "platform": "linux/amd64",
   "packId": "nuclei",
   "baseImage": "docker.io/library/alpine@sha256:85f2b723e106c34644cd5851d7e81ee87da98ac54672b29947c052a45d31dc2f",
@@ -38,5 +38,12 @@
     }
   ],
   "templateRevision": "21dedc3f3d4e52c8421aa4cfe34a26f33450abeb",
-  "executables": ["nuclei"]
+  "executables": [
+    "nuclei"
+  ],
+  "execution": {
+    "timeoutMs": 900000,
+    "execTimeoutMs": 930000,
+    "synchronous": true
+  }
 }

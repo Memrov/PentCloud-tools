@@ -1,3 +1,7 @@
+export declare const TOOL_TIMEOUT_MS: number;
+export declare const TOOL_EXEC_TIMEOUT_MS: number;
+export declare const TOOL_IDLE_TIMEOUT_MS: number;
+export declare const TOOL_MCP_TIMEOUT_MS: number;
 export interface ToolCommand {
   argv: string[];
   stdin: string;
@@ -8,6 +12,7 @@ export interface PackLock {
   packId: string;
   packVersion: string;
   tools: readonly { tool: string; version: string }[];
+  execution?: { timeoutMs: number; execTimeoutMs: number; synchronous: boolean };
 }
 export interface ToolResult {
   tool: string;
@@ -41,7 +46,7 @@ export declare function request(
 export interface StreamStep {
   do(
     name: string,
-    config: { retries: { limit: 0; delay: "1 second" }; timeout: "3 minutes" },
+    config: { retries: { limit: 0; delay: "1 second" }; timeout: "20 minutes" },
     callback: () => Promise<ReadableStream<Uint8Array>>,
   ): Promise<ReadableStream<Uint8Array>>;
 }
