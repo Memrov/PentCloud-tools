@@ -1,2 +1,2 @@
 # Development-only reporting requires Python 3.11+; build scripts still support Python 3.9+.
-coverage==7.17.2
+coverage==7.17.3
